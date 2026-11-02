@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: #000;
+  color: #f5f5f0;
+}
+
+body {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  -webkit-font-smoothing: none;
+}
+
+/* Stepped pixel border (no rounded corners anywhere) */
+.pixel-border {
+  box-shadow:
+    0 -2px 0 0 #f5f5f0,
+    0 2px 0 0 #f5f5f0,
+    -2px 0 0 0 #f5f5f0,
+    2px 0 0 0 #f5f5f0;
+  margin: 2px;
+}
+.pixel-border-active {
+  box-shadow:
+    0 -2px 0 0 #c8102e,
+    0 2px 0 0 #c8102e,
+    -2px 0 0 0 #c8102e,
+    2px 0 0 0 #c8102e,
+    0 0 0 6px rgba(200, 16, 46, 0.25);
+}
+.pixel-border-dim {
+  box-shadow:
+    0 -2px 0 0 #2a2a28,
+    0 2px 0 0 #2a2a28,
+    -2px 0 0 0 #2a2a28,
+    2px 0 0 0 #2a2a28;
+  margin: 2px;
+}
+
+/* Faint scanlines for the dark-fantasy CRT feel */
+.scanlines::after {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 3px);
+  z-index: 50;
+}
+
+:focus-visible {
+  outline: 2px solid #c8102e;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
