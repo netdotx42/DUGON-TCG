@@ -157,6 +157,50 @@ Token metadata is served from `public/metadata/{id}.json`. Set `CARD_METADATA_BA
 `https://<your-domain>/metadata/` before deploying (or call `setBaseURI` later as the owner), and
 regenerate metadata with `PUBLIC_BASE_URL=https://<your-domain> npm run assets`.
 
+## DUGON DAO ($DUGON) token (Base Sepolia)
+
+`contracts/contracts/DugonDaoToken.sol` is a separate, fixed-supply ERC-20 governance token.
+
+| | |
+|---|---|
+| Name / ticker | DUGON DAO / DUGON |
+| Supply | 598,000,000 (18 decimals), all minted at deployment |
+| Extras | burnable, EIP-2612 permit, ERC20Votes (delegate and vote via an OpenZeppelin Governor) |
+| Admin | none: no owner, no mint, no pause |
+
+| Bucket | Share | Tokens | Wallet env var |
+|---|---|---|---|
+| initial | 30% | 179,400,000 | `DUGON_INITIAL_WALLET` |
+| dev | 15% | 89,700,000 | `DUGON_DEV_WALLET` |
+| marketing | 15% | 89,700,000 | `DUGON_MARKETING_WALLET` |
+| presale | 15% | 89,700,000 | `DUGON_PRESALE_WALLET` |
+| liquidity (LP) | 25% | 149,500,000 | `DUGON_LP_WALLET` |
+
+Shares live in `contracts/scripts/token-config.ts`. Wallets are public addresses set in
+`contracts/.env`; any left empty falls back to the deployer address (the script prints the table
+before deploying, so check it).
+
+**Option A: Hardhat, from your own machine** (keep the key in your local `.env`, never in chat or git)
+
+```bash
+cd contracts
+cp .env.example .env      # DEPLOYER_PRIVATE_KEY (throwaway testnet key) + the five DUGON_*_WALLET addresses
+npm test
+npm run deploy:token:base-sepolia
+```
+
+**Option B: Remix + MetaMask** (no private key leaves your wallet)
+
+1. Open remix.ethereum.org, create `DugonDaoToken.sol` and paste the contract (Remix resolves the
+   `@openzeppelin/contracts` imports). Compile with 0.8.24, optimizer on, EVM version `cancun`.
+2. Deploy tab: environment "Injected Provider - MetaMask", with MetaMask on Base Sepolia.
+3. Constructor arguments (replace the addresses):
+   - `labels`: `["initial","dev","marketing","presale","liquidity"]`
+   - `recipients`: `["0xINITIAL","0xDEV","0xMARKETING","0xPRESALE","0xLP"]`
+   - `bps`: `[3000,1500,1500,1500,2500]`
+
+Both routes refuse (Hardhat) or should not be used (Remix) on any chain except Base Sepolia (84532).
+
 ## Deploy the web app to Vercel
 
 1. Import the repository in Vercel (framework preset: Next.js, root directory: repo root).
