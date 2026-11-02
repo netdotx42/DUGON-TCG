@@ -19,11 +19,11 @@ function WalletCard(props: {
   installName: string;
 }) {
   return (
-    <div className="pixel-border flex flex-col gap-3 p-5">
-      <div className="font-mono text-xs text-ash">{props.jp}</div>
-      <div className="font-pixel text-sm text-bone">{props.title}</div>
+    <div className="panel flex flex-col gap-3 p-6">
+      <div className="neon-soft font-mono text-base">{props.jp}</div>
+      <div className="neon font-pixel text-lg">{props.title}</div>
       <div className="font-mono text-xs text-bone">{props.network}</div>
-      <p className="font-mono text-xs leading-relaxed text-ash">{props.note}</p>
+      <p className="font-mono text-sm leading-relaxed text-bone/75">{props.note}</p>
       <Button onClick={props.onClick} disabled={props.connecting} className="mt-auto">
         {props.connecting ? "Connecting…" : props.installed ? `Connect ${props.title}` : `Install ${props.installName}`}
       </Button>
@@ -108,9 +108,9 @@ export default function ConnectPage() {
           installName="MetaMask"
         />
       </div>
-      <div className="mt-10 flex flex-col items-start gap-3 border-t border-smoke pt-6">
+      <div className="pixel-border-dim mt-10 flex flex-col items-start gap-3 p-6">
         <DemoBadge>No wallet? Guest mode is simulated</DemoBadge>
-        <p className="max-w-xl font-mono text-xs text-ash">
+        <p className="max-w-xl font-mono text-sm text-bone/75">
           Play the full PvE demo without a wallet. Nothing is signed or minted; progress stays in this browser.
         </p>
         <Button

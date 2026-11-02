@@ -4,6 +4,11 @@
 
 :root {
   color-scheme: dark;
+  --blood: #c8102e;
+  --neon: #ff3048;
+  --glow: rgba(255, 36, 60, 0.55);
+  --glow-soft: rgba(200, 16, 46, 0.28);
+  --amber: #e2b54a;
 }
 
 html,
@@ -17,6 +22,125 @@ body {
   -webkit-font-smoothing: none;
 }
 
+/* ---------- Atmosphere (fixed decorative background) ---------- */
+.atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(200, 16, 46, 0.22), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 50% 110%, rgba(200, 16, 46, 0.18), transparent 70%),
+    linear-gradient(#070405, #000 40%, #050203);
+}
+.atmo-haze {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 4px 4px;
+  opacity: 0.35;
+}
+.atmo-cloud {
+  position: absolute;
+  opacity: 0.75;
+  animation: cloud-drift 60s ease-in-out infinite alternate;
+}
+.atmo-cloud-a { top: 14%; left: -60px; }
+.atmo-cloud-b { top: 46%; right: -80px; animation-duration: 75s; animation-delay: -20s; }
+.atmo-cloud-c { bottom: 6%; left: 8%; animation-duration: 90s; animation-delay: -40s; }
+.atmo-mask {
+  position: absolute;
+}
+.atmo-mask-a {
+  right: -90px;
+  top: 30%;
+  opacity: 0.12;
+  filter: drop-shadow(0 0 14px rgba(200, 16, 46, 0.6));
+}
+.atmo-mask-b {
+  left: -70px;
+  bottom: -40px;
+  opacity: 0.035;
+}
+.atmo-embers {
+  position: absolute;
+  inset: 0;
+}
+.ember {
+  position: absolute;
+  bottom: -12px;
+  background: #ff3b3b;
+  box-shadow: 0 0 6px 1px rgba(255, 50, 50, 0.8);
+  opacity: 0;
+  animation-name: ember-rise;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+.ember-hot {
+  background: #ff7a45;
+  box-shadow: 0 0 8px 2px rgba(255, 110, 60, 0.7);
+}
+.atmo-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.75));
+}
+@keyframes ember-rise {
+  0% { transform: translate3d(0, 0, 0); opacity: 0; }
+  10% { opacity: 0.9; }
+  70% { opacity: 0.7; }
+  100% { transform: translate3d(var(--drift, 0), -105vh, 0); opacity: 0; }
+}
+@keyframes cloud-drift {
+  from { transform: translateX(0); }
+  to { transform: translateX(60px); }
+}
+/* Fewer embers and smaller masks on phones to keep it light */
+@media (max-width: 640px) {
+  .ember:nth-child(2n) { display: none; }
+  .atmo-mask-a { right: -200px; top: 40%; opacity: 0.06; }
+  .atmo-cloud { width: 220px; height: auto; opacity: 0.5; }
+}
+
+/* ---------- Neon red text & accents ---------- */
+.neon {
+  color: var(--neon);
+  text-shadow:
+    0 0 2px #ffd0d5,
+    0 0 8px var(--glow),
+    0 0 22px rgba(200, 16, 46, 0.6),
+    3px 3px 0 #3a0710;
+}
+.neon-soft {
+  color: var(--neon);
+  text-shadow: 0 0 8px var(--glow);
+}
+.glow-white {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.35);
+}
+.text-amber { color: var(--amber); }
+
+/* Section heading with a red underline + trailing dashes, e.g. "TIER" */
+.section-label {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 8px;
+}
+.section-label::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  min-width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--blood) 0 62%, transparent 62% 66%, var(--blood) 66% 74%, transparent 74% 78%, var(--blood) 78% 84%, transparent 84%);
+  box-shadow: 0 0 8px var(--glow);
+}
+
 /* Stepped pixel border (no rounded corners anywhere) */
 .pixel-border {
   box-shadow:
@@ -28,19 +152,154 @@ body {
 }
 .pixel-border-active {
   box-shadow:
-    0 -2px 0 0 #c8102e,
-    0 2px 0 0 #c8102e,
-    -2px 0 0 0 #c8102e,
-    2px 0 0 0 #c8102e,
-    0 0 0 6px rgba(200, 16, 46, 0.25);
+    0 -2px 0 0 var(--neon),
+    0 2px 0 0 var(--neon),
+    -2px 0 0 0 var(--neon),
+    2px 0 0 0 var(--neon),
+    0 0 18px 2px var(--glow);
 }
 .pixel-border-dim {
+  background-color: rgba(8, 5, 6, 0.72);
   box-shadow:
     0 -2px 0 0 #2a2a28,
     0 2px 0 0 #2a2a28,
     -2px 0 0 0 #2a2a28,
     2px 0 0 0 #2a2a28;
   margin: 2px;
+}
+
+/* Glass-dark panel with a red-glow frame (sidebars, wallet cards) */
+.panel {
+  position: relative;
+  background: linear-gradient(180deg, rgba(20, 8, 10, 0.88), rgba(4, 2, 3, 0.92));
+  box-shadow:
+    0 -2px 0 0 #f5f5f0,
+    0 2px 0 0 #f5f5f0,
+    -2px 0 0 0 #f5f5f0,
+    2px 0 0 0 #f5f5f0,
+    0 0 28px rgba(200, 16, 46, 0.18);
+  margin: 2px;
+}
+.panel-red {
+  box-shadow:
+    0 -2px 0 0 var(--blood),
+    0 2px 0 0 var(--blood),
+    -2px 0 0 0 var(--blood),
+    2px 0 0 0 var(--blood),
+    0 0 24px var(--glow-soft),
+    inset 0 0 24px rgba(200, 16, 46, 0.12);
+}
+
+/* Interactive cards glow red on hover */
+.glow-hover {
+  transition: transform 150ms ease, filter 150ms ease;
+}
+.glow-hover:hover,
+.glow-hover:focus-visible {
+  filter: drop-shadow(0 0 10px rgba(255, 40, 60, 0.45));
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  position: relative;
+  clip-path: polygon(0 4px, 4px 4px, 4px 0, calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px));
+}
+.btn-primary {
+  background: linear-gradient(180deg, #e3203c, #a70c25);
+  color: #fff;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 0 rgba(0, 0, 0, 0.35);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+  filter: drop-shadow(0 0 10px rgba(255, 36, 60, 0.45));
+}
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(180deg, #ff3550, #c8102e);
+  filter: drop-shadow(0 0 16px rgba(255, 36, 60, 0.7));
+}
+.btn-ghost {
+  background: rgba(10, 4, 6, 0.75);
+  color: #f5f5f0;
+  box-shadow: inset 0 0 0 2px #f5f5f0;
+}
+.btn-ghost:hover:not(:disabled) {
+  color: #fff;
+  box-shadow: inset 0 0 0 2px var(--neon), inset 0 0 14px rgba(255, 40, 60, 0.35);
+}
+
+/* ---------- Ember balance pill ---------- */
+.ember-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 22px 10px 12px;
+  background: linear-gradient(180deg, #2a0a10, #0b0304);
+  clip-path: polygon(0 8px, 4px 8px, 4px 4px, 8px 4px, 8px 0, calc(100% - 8px) 0, calc(100% - 8px) 4px, calc(100% - 4px) 4px, calc(100% - 4px) 8px, 100% 8px, 100% calc(100% - 8px), calc(100% - 4px) calc(100% - 8px), calc(100% - 4px) calc(100% - 4px), calc(100% - 8px) calc(100% - 4px), calc(100% - 8px) 100%, 8px 100%, 8px calc(100% - 4px), 4px calc(100% - 4px), 4px calc(100% - 8px), 0 calc(100% - 8px));
+  box-shadow: inset 0 0 0 3px var(--neon), inset 0 0 0 5px #000, inset 0 0 0 7px rgba(255, 48, 72, 0.5), inset 0 0 22px rgba(255, 40, 60, 0.45);
+}
+.ember-pill-wrap {
+  filter: drop-shadow(0 0 12px rgba(255, 36, 60, 0.55));
+}
+.ember-gem {
+  animation: gem-pulse 2.6s ease-in-out infinite;
+}
+@keyframes gem-pulse {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(255, 60, 60, 0.7)); }
+  50% { filter: drop-shadow(0 0 10px rgba(255, 60, 60, 1)); }
+}
+
+/* Dashed red notice strip */
+.notice {
+  border: 2px dashed var(--blood);
+  background: rgba(30, 4, 8, 0.55);
+  box-shadow: 0 0 14px var(--glow-soft), inset 0 0 12px rgba(200, 16, 46, 0.15);
+}
+
+/* ---------- Progress nav ---------- */
+.step-link {
+  position: relative;
+  transition: color 150ms ease, text-shadow 150ms ease;
+}
+.step-active {
+  color: var(--neon);
+  text-shadow: 0 0 8px var(--glow);
+}
+.step-active::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  bottom: -2px;
+  height: 2px;
+  background: var(--neon);
+  box-shadow: 0 0 8px var(--glow);
+}
+.step-dots {
+  background-image: radial-gradient(circle, currentColor 1px, transparent 1.5px);
+  background-size: 6px 4px;
+  background-repeat: repeat-x;
+  background-position: center;
+}
+.header-glow-line {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(200, 16, 46, 0.9) 20%, rgba(255, 48, 72, 1) 50%, rgba(200, 16, 46, 0.9) 80%, transparent);
+  box-shadow: 0 0 12px rgba(255, 36, 60, 0.6);
+}
+
+/* ---------- Bottom marquee ---------- */
+.marquee {
+  overflow: hidden;
+  border-top: 2px solid #2a2a28;
+  border-bottom: 2px solid #2a2a28;
+  background: linear-gradient(90deg, rgba(40, 6, 12, 0.9), rgba(8, 3, 4, 0.9) 30%, rgba(8, 3, 4, 0.9) 70%, rgba(40, 6, 12, 0.9));
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 32s linear infinite;
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 /* Faint scanlines for the dark-fantasy CRT feel */
@@ -54,7 +313,7 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid #c8102e;
+  outline: 2px solid var(--neon);
   outline-offset: 3px;
 }
 
@@ -65,9 +324,12 @@ body {
     animation: none !important;
     transition: none !important;
   }
+  .atmo-embers {
+    display: none;
+  }
 }
 
-/* Booster pack tier frames (palette-only: grey, bone, blood) */
+/* ---------- Booster pack tier frames ---------- */
 .tier-paper {
   outline: 2px dashed #8a8a85;
   outline-offset: -2px;
@@ -86,11 +348,58 @@ body {
 }
 .tier-obsidian {
   box-shadow:
-    inset 0 0 0 2px #c8102e,
+    inset 0 0 0 2px var(--blood),
     inset 0 0 0 4px #000,
-    inset 0 0 0 6px #c8102e,
+    inset 0 0 0 6px var(--blood),
     0 0 18px rgba(200, 16, 46, 0.35);
 }
+
+/* Tier picker cards (Packs page) */
+.tier-card {
+  position: relative;
+  background: rgba(10, 6, 7, 0.82);
+  transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
+}
+.tier-card:hover:not([aria-disabled="true"]) {
+  transform: translateY(-2px);
+  background: rgba(24, 10, 12, 0.9);
+}
+.tier-card-paper { outline: 3px dashed #8a8a85; outline-offset: -3px; }
+.tier-card-bronze { box-shadow: inset 0 0 0 3px #8a8a85; }
+.tier-card-silver { box-shadow: inset 0 0 0 3px #bdbdb8; }
+.tier-card-gold { outline: 3px dashed #bdbdb8; outline-offset: -3px; }
+.tier-card-obsidian {
+  outline: 3px dashed var(--neon);
+  outline-offset: -3px;
+  background: radial-gradient(ellipse 90% 70% at 50% 120%, rgba(255, 60, 30, 0.35), transparent 70%), rgba(14, 4, 6, 0.9);
+  box-shadow: 0 0 26px rgba(255, 36, 60, 0.35), inset 0 0 30px rgba(200, 16, 46, 0.25);
+}
+.tier-card-obsidian::after {
+  /* pixel flames along the bottom edge */
+  content: "";
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  bottom: 3px;
+  height: 28px;
+  pointer-events: none;
+  background:
+    linear-gradient(135deg, transparent 50%, rgba(255, 70, 40, 0.55) 50%) 0 100% / 12px 12px repeat-x,
+    linear-gradient(225deg, transparent 50%, rgba(255, 70, 40, 0.55) 50%) 0 100% / 12px 12px repeat-x,
+    linear-gradient(0deg, rgba(255, 60, 30, 0.35), transparent);
+  animation: flicker 1.8s ease-in-out infinite;
+  image-rendering: pixelated;
+}
+.tier-card[aria-pressed="true"] {
+  background: rgba(40, 8, 14, 0.9);
+  box-shadow: inset 0 0 0 3px var(--neon), 0 0 22px var(--glow);
+  outline-color: transparent;
+}
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
 /* Crimped foil edge at the top and bottom of a pack */
 .pack-crimp {
   background-image: linear-gradient(135deg, #2a2a28 25%, transparent 25%), linear-gradient(225deg, #2a2a28 25%, transparent 25%);
@@ -104,3 +413,6 @@ body {
 .animate-flip-in {
   animation: flip-in 0.35s ease-out both;
 }
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
