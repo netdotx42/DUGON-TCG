@@ -1,0 +1,34 @@
+{
+  "name": "Long-Nose Elder (鼻高翁)",
+  "description": "Teaches swordplay to anyone who climbs that high. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/27.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Set",
+      "value": "cedar-peaks"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 4,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 4,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 4,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Keyword",
+      "value": "Leech"
+    }
+  ]
+}

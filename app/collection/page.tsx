@@ -4,15 +4,18 @@ import { useState } from "react";
 import CardView from "@/components/CardView";
 import PixelSprite from "@/components/PixelSprite";
 import { LinkButton, PageTitle, DemoBadge } from "@/components/ui";
-import { CARD_BY_ID, CARDS, KEYWORD_TEXT, STARTER_IDS, UNLOCK_XP } from "@/lib/cards";
+import { CARD_BY_ID, CARDS, KEYWORD_TEXT, ORIGIN_CARDS, STARTER_IDS, UNLOCK_XP } from "@/lib/cards";
+import { PACKS, PACK_BY_SLUG } from "@/lib/packs";
 import { useProfile } from "@/lib/client/profile";
 
 export default function CollectionPage() {
   const { profile, unlocked, identity } = useProfile();
   const [focus, setFocus] = useState<number>(4);
+  const [set, setSet] = useState<string>("origin");
+  const shown = set === "origin" ? ORIGIN_CARDS : CARDS.filter((c) => c.pack === set);
   const claimed = !!profile.claim;
   const f = CARD_BY_ID[focus];
-  const next = CARDS.find((c) => !unlocked.includes(c.id) && UNLOCK_XP[c.id] !== undefined);
+  const next = ORIGIN_CARDS.find((c) => !unlocked.includes(c.id) && UNLOCK_XP[c.id] !== undefined);
 
   return (
     <div>
@@ -22,7 +25,7 @@ export default function CollectionPage() {
         sub={
           claimed
             ? `${unlocked.length} of ${CARDS.length} cards awakened · ${profile.xp} XP · ${profile.record.win}W ${profile.record.loss}L ${profile.record.draw}D`
-            : "The ten spirits of the demo set. Claim your starter pack to awaken the first five."
+            : `The ${CARDS.length} spirits of DUGON: ten origin cards plus ${PACKS.length} pack sets. Claim your starter pack to awaken the first five.`
         }
       />
       {profile.claim?.mode === "simulated" && (
@@ -31,9 +34,30 @@ export default function CollectionPage() {
         </div>
       )}
 
+      <nav aria-label="Card sets" className="mb-6 flex flex-wrap gap-2">
+        {[{ slug: "origin", name: "Origin", jp: "原初" }, ...PACKS].map((p) => {
+          const ids = p.slug === "origin" ? ORIGIN_CARDS.map((c) => c.id) : PACK_BY_SLUG[p.slug].cardIds;
+          const have = ids.filter((id) => unlocked.includes(id)).length;
+          return (
+            <button
+              key={p.slug}
+              type="button"
+              onClick={() => {
+                setSet(p.slug);
+                setFocus(ids[0]);
+              }}
+              aria-pressed={set === p.slug}
+              className={`px-2 py-1 font-pixel text-[8px] ${set === p.slug ? "bg-bone text-ink" : "pixel-border-dim text-ash hover:text-bone"}`}
+            >
+              {p.name} <span className="font-mono">{have}/{ids.length}</span>
+            </button>
+          );
+        })}
+      </nav>
+
       <div className="grid gap-8 lg:grid-cols-[1fr_18rem]">
         <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
-          {CARDS.map((c, i) => {
+          {shown.map((c, i) => {
             const have = unlocked.includes(c.id);
             const starter = (STARTER_IDS as readonly number[]).includes(c.id);
             return (
@@ -45,7 +69,7 @@ export default function CollectionPage() {
                   selected={focus === c.id}
                   owned={have}
                   locked={!have}
-                  lockLabel={starter ? "CLAIM" : `${UNLOCK_XP[c.id]} XP`}
+                  lockLabel={starter ? "CLAIM" : c.pack ? "PACK" : `${UNLOCK_XP[c.id]} XP`}
                   onClick={() => setFocus(c.id)}
                 />
               </div>
@@ -81,7 +105,10 @@ export default function CollectionPage() {
             </p>
           )}
           <p className="mt-3 font-mono text-xs italic text-ash">“{f.flavor}”</p>
-          <p className="mt-3 font-mono text-[10px] text-ash">Token id #{f.id}</p>
+          <p className="mt-3 font-mono text-[10px] text-ash">
+            Token id #{f.id}
+            {f.pack && ` · ${PACK_BY_SLUG[f.pack].name} pack · ${profile.owned[f.id] ?? 0} owned`}
+          </p>
         </aside>
       </div>
 
@@ -91,7 +118,12 @@ export default function CollectionPage() {
         ) : !claimed ? (
           <LinkButton href="/claim">Claim starter pack</LinkButton>
         ) : (
-          <LinkButton href="/deck">Build your deck</LinkButton>
+          <>
+            <LinkButton href="/deck">Build your deck</LinkButton>
+            <LinkButton href="/packs" variant="ghost">
+              Open packs
+            </LinkButton>
+          </>
         )}
         {claimed && next && (
           <span className="font-mono text-xs text-ash">

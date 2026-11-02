@@ -1,0 +1,34 @@
+{
+  "name": "Takane, Summit King (高嶺)",
+  "description": "The clouds part when he lands. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/28.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    },
+    {
+      "trait_type": "Set",
+      "value": "cedar-peaks"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 5,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 5,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 5,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Keyword",
+      "value": "Swift"
+    }
+  ]
+}

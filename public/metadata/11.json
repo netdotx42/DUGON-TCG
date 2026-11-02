@@ -1,0 +1,30 @@
+{
+  "name": "Cinder Pup (燠犬)",
+  "description": "Fetches coals. Drops them on your floor. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/11.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Set",
+      "value": "ember-shrine"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 1,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 2,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 1,
+      "display_type": "number"
+    }
+  ]
+}

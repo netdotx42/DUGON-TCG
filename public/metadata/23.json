@@ -1,0 +1,30 @@
+{
+  "name": "Pine Sprite (松精)",
+  "description": "Counts its needles, loses count, starts over. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/23.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Set",
+      "value": "cedar-peaks"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 1,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 1,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 2,
+      "display_type": "number"
+    }
+  ]
+}

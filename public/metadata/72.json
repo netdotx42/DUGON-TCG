@@ -1,0 +1,34 @@
+{
+  "name": "Reed Wisp (葦火)",
+  "description": "Leads travellers off the boardwalk. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/72.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Set",
+      "value": "mist-marsh"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 2,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 2,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 2,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Keyword",
+      "value": "Swift"
+    }
+  ]
+}

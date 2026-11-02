@@ -1,0 +1,30 @@
+{
+  "name": "Sasara, Bamboo Lord (笹羅)",
+  "description": "The whole grove bends when he breathes. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/40.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    },
+    {
+      "trait_type": "Set",
+      "value": "bamboo-veil"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 5,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 6,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 6,
+      "display_type": "number"
+    }
+  ]
+}

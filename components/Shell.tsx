@@ -13,6 +13,7 @@ const STEPS = [
   { href: "/connect", label: "Connect" },
   { href: "/claim", label: "Claim" },
   { href: "/collection", label: "Collection" },
+  { href: "/packs", label: "Packs" },
   { href: "/deck", label: "Deck" },
   { href: "/battle", label: "Battle" },
   { href: "/results", label: "Results" },

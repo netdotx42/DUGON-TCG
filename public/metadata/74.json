@@ -1,0 +1,34 @@
+{
+  "name": "Heron Ghost (鷺霊)",
+  "description": "Stands on one leg for a century. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/74.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Rare"
+    },
+    {
+      "trait_type": "Set",
+      "value": "mist-marsh"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 3,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 3,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 2,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Keyword",
+      "value": "Swift"
+    }
+  ]
+}

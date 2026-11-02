@@ -1,0 +1,30 @@
+{
+  "name": "Drum Hare (鼓兎)",
+  "description": "Keeps time for the storm. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/48.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Set",
+      "value": "thunder-drum"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 2,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 2,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 3,
+      "display_type": "number"
+    }
+  ]
+}

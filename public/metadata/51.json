@@ -1,0 +1,30 @@
+{
+  "name": "Cloud Drummer (雲鼓手)",
+  "description": "Plays the same song every monsoon. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/51.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Set",
+      "value": "thunder-drum"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 4,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 5,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 4,
+      "display_type": "number"
+    }
+  ]
+}

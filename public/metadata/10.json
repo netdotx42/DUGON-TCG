@@ -8,6 +8,10 @@
       "value": "Legendary"
     },
     {
+      "trait_type": "Set",
+      "value": "origin"
+    },
+    {
       "trait_type": "Cost",
       "value": 5,
       "display_type": "number"

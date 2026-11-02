@@ -1,0 +1,30 @@
+{
+  "name": "Kelp Oni (藻鬼)",
+  "description": "Pulls the fishing boats down by their nets. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/19.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Uncommon"
+    },
+    {
+      "trait_type": "Set",
+      "value": "tide-hollow"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 3,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 3,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 4,
+      "display_type": "number"
+    }
+  ]
+}

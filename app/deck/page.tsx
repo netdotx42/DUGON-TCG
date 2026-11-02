@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import CardView from "@/components/CardView";
 import { Button, PageTitle } from "@/components/ui";
 import { CARD_BY_ID, CARDS, DECK_SIZE, UNLOCK_XP, validateDeck } from "@/lib/cards";
+
+const RARITY_RANK = { Common: 0, Uncommon: 1, Rare: 2, Epic: 3, Legendary: 4 } as const;
 import { useProfile } from "@/lib/client/profile";
 import { useGate } from "@/lib/client/useGate";
 
@@ -51,7 +53,9 @@ export default function DeckPage() {
       </section>
 
       <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-3 md:grid-cols-5">
-        {CARDS.map((c) => {
+        {CARDS.filter((c) => !c.pack || unlocked.includes(c.id))
+          .sort((a, b) => (a.pack ? 1 : 0) - (b.pack ? 1 : 0) || a.cost - b.cost || RARITY_RANK[a.rarity] - RARITY_RANK[b.rarity])
+          .map((c) => {
           const have = unlocked.includes(c.id);
           return (
             <CardView

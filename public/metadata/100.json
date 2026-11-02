@@ -1,0 +1,34 @@
+{
+  "name": "Kokuu, the Void Oni (虚空)",
+  "description": "Behind the last gate, there is only him. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/100.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    },
+    {
+      "trait_type": "Set",
+      "value": "void-gate"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 5,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 6,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 6,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Keyword",
+      "value": "Leech"
+    }
+  ]
+}
