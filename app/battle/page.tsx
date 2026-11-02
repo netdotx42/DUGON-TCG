@@ -293,7 +293,7 @@ export default function BattlePage() {
             targetable={myTurn && canTarget("hero")}
             onTarget={() => hitTarget("hero")}
           />
-          <div className="flex min-h-[7.5rem] items-center justify-center gap-2 border-b border-dashed border-smoke pb-3" aria-label="Enemy board">
+          <div className="flex min-h-[6.5rem] items-center justify-center gap-2 border-b border-dashed border-smoke pb-3" aria-label="Enemy board">
             {view.bot.board.length === 0 && <span className="font-mono text-xs text-ash">empty field</span>}
             {view.bot.board.map((u) => (
               <UnitView
@@ -344,7 +344,7 @@ export default function BattlePage() {
           </div>
 
           {/* Player side */}
-          <div className="flex min-h-[7.5rem] items-center justify-center gap-2 border-t border-dashed border-smoke pt-3" aria-label="Your board">
+          <div className="flex min-h-[6.5rem] items-center justify-center gap-2 border-t border-dashed border-smoke pt-3" aria-label="Your board">
             {view.player.board.length === 0 && <span className="font-mono text-xs text-ash">summon a spirit from your hand</span>}
             {view.player.board.map((u) => (
               <UnitView
@@ -374,7 +374,16 @@ export default function BattlePage() {
             hit={hits.has("hero:player")}
           />
 
-          <div aria-label="Your hand" className="flex gap-2 overflow-x-auto pb-2 pt-3">
+          {error && (
+            <p role="alert" className="font-mono text-xs text-blood">
+              {error}
+            </p>
+          )}
+          {/* On phones the hand sticks to the bottom of the screen so it stays in reach while you look at the board. */}
+          <div
+            aria-label="Your hand"
+            className="sticky bottom-0 z-30 -mx-4 flex gap-2 overflow-x-auto bg-ink/90 px-4 pb-3 pt-3 shadow-[0_-2px_0_#c8102e] backdrop-blur-md lg:static lg:mx-0 lg:bg-transparent lg:px-0 lg:pb-2 lg:shadow-none lg:backdrop-blur-none"
+          >
             {view.player.hand.length === 0 && <span className="font-mono text-xs text-ash">no cards in hand</span>}
             {view.player.hand.map((c) => {
               const card = CARD_BY_ID[c.cardId];
@@ -384,11 +393,6 @@ export default function BattlePage() {
               );
             })}
           </div>
-          {error && (
-            <p role="alert" className="font-mono text-xs text-blood">
-              {error}
-            </p>
-          )}
         </div>
 
         <aside className="pixel-border-dim h-fit p-3" aria-label="Battle log">

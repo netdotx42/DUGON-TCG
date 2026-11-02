@@ -29,6 +29,8 @@ This repository is a **testnet-only PvE demo** for Solana Devnet and Base Sepoli
 - Fallen units go to the graveyard and are reshuffled into an empty deck.
 - First hero to 0 HP loses. After **15 rounds** the hero with more HP wins (equal HP is a draw).
 - XP: win 100 (+5 per round left), draw 40, loss 25. Unlocks at 100 / 200 / 350 / 500 / 700 XP.
+- The Oni Bot tries every legal move one step ahead and keeps the best. Its deck gets tougher at 100 and 350 XP.
+  `tests/balance.test.ts` simulates hundreds of battles to keep a starter deck winning a fair share without winning almost every game.
 
 ### The cards (original art, `lib/sprites.ts`)
 
@@ -100,7 +102,7 @@ app/api/battle/action   validates a player action, runs the bot turn
 lib/cards.ts            card definitions (origin + 15 pack sets), deck validation, unlocks
 lib/packs.ts            pack sets, tiers, drop rates, pack opening
 lib/game/engine.ts      pure rules engine (shared by server and tests)
-lib/game/bot.ts         Oni Bot AI (only legal moves)
+lib/game/bot.ts         Oni Bot AI (one-step lookahead, only legal moves) and its XP deck tiers
 lib/server/*            sealed battle tokens, wallet signature checks, claim store
 contracts/              Hardhat project: DugonStarterCards.sol, tests, deploy script
 tests/                  Vitest gameplay + server tests

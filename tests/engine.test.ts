@@ -246,7 +246,7 @@ describe("Pack Bond", () => {
 describe("bot", () => {
   it("only makes legal moves and always finishes its turn", () => {
     for (let seed = 1; seed <= 200; seed++) {
-      let s = createGame(STARTER, BOT_DECKS[seed % 3], seed, `b${seed}`);
+      let s = createGame(STARTER, BOT_DECKS[seed % BOT_DECKS.length], seed, `b${seed}`);
       while (!s.over) {
         s = applyAction(s, "player", { type: "end" });
         if (s.over) break;
@@ -291,7 +291,7 @@ describe("full games", () => {
   it("every game terminates within 15 rounds with a valid outcome", () => {
     const outcomes = { win: 0, loss: 0, draw: 0 };
     for (let seed = 1; seed <= 300; seed++) {
-      let s = createGame(STARTER, BOT_DECKS[seed % 3], seed, `g${seed}`);
+      let s = createGame(STARTER, BOT_DECKS[seed % BOT_DECKS.length], seed, `g${seed}`);
       let steps = 0;
       while (!s.over && steps++ < 2000) {
         s = applyAction(s, "player", greedy(s));
