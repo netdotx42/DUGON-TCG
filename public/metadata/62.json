@@ -1,0 +1,34 @@
+{
+  "name": "Moon Priest Fox (月神官)",
+  "description": "Tends a shrine no human has ever found. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/62.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Rare"
+    },
+    {
+      "trait_type": "Set",
+      "value": "moon-fox"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 3,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 2,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 4,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Keyword",
+      "value": "Leech"
+    }
+  ]
+}

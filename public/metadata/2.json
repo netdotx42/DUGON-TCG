@@ -8,6 +8,10 @@
       "value": "Common"
     },
     {
+      "trait_type": "Set",
+      "value": "origin"
+    },
+    {
       "trait_type": "Cost",
       "value": 1,
       "display_type": "number"

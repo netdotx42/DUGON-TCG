@@ -1,0 +1,34 @@
+{
+  "name": "Night Devourer (夜喰)",
+  "description": "Eats the stars one at a time. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/99.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Set",
+      "value": "void-gate"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 4,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 4,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 4,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Keyword",
+      "value": "Leech"
+    }
+  ]
+}

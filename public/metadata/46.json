@@ -1,0 +1,34 @@
+{
+  "name": "Tetsuo, Forge Father (鉄翁)",
+  "description": "Every oni blade was first his idea. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/46.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    },
+    {
+      "trait_type": "Set",
+      "value": "iron-forge"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 5,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 5,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 5,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Keyword",
+      "value": "Leech"
+    }
+  ]
+}

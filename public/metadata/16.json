@@ -1,0 +1,30 @@
+{
+  "name": "Homura, Shrine Flame (焔)",
+  "description": "The shrine burned down. She stayed. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/16.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    },
+    {
+      "trait_type": "Set",
+      "value": "ember-shrine"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 5,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 6,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 5,
+      "display_type": "number"
+    }
+  ]
+}

@@ -8,6 +8,10 @@
       "value": "Epic"
     },
     {
+      "trait_type": "Set",
+      "value": "origin"
+    },
+    {
       "trait_type": "Cost",
       "value": 4,
       "display_type": "number"

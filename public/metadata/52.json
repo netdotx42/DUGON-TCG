@@ -1,0 +1,34 @@
+{
+  "name": "Ikazuchi, Storm Lord (雷主)",
+  "description": "When he strikes, the mountain answers. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/52.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    },
+    {
+      "trait_type": "Set",
+      "value": "thunder-drum"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 5,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 7,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 4,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Keyword",
+      "value": "Swift"
+    }
+  ]
+}

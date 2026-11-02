@@ -19,13 +19,16 @@ describe("deck validation", () => {
     expect(validateDeck([1, 2, 3, 4, 5])).toBe(true);
     expect(validateDeck([1, 2, 3, 4])).toBe(false);
     expect(validateDeck([1, 1, 2, 3, 4])).toBe(false);
-    expect(validateDeck([1, 2, 3, 4, 99])).toBe(false);
+    expect(validateDeck([1, 2, 3, 4, 999])).toBe(false);
+    expect(validateDeck([11, 23, 47, 70, 100])).toBe(true);
     expect(validateDeck("12345")).toBe(false);
   });
   it("unlocks starter cards on claim and more with XP", () => {
     expect(unlockedCardIds(false, 9999)).toEqual([]);
     expect(unlockedCardIds(true, 0)).toEqual([1, 2, 3, 4, 5]);
     expect(unlockedCardIds(true, 200)).toEqual([1, 2, 3, 4, 5, 6, 7]);
+    expect(unlockedCardIds(true, 0, { 16: 1, 11: 2 })).toEqual([1, 2, 3, 4, 5, 11, 16]);
+    expect(unlockedCardIds(false, 0, { 16: 1 })).toEqual([]);
   });
 });
 

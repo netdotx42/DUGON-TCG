@@ -1,0 +1,34 @@
+{
+  "name": "Anvil Imp (鉄床鬼)",
+  "description": "Takes every hammer blow and asks for more. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/41.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Set",
+      "value": "iron-forge"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 1,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 1,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 2,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Keyword",
+      "value": "Guard"
+    }
+  ]
+}

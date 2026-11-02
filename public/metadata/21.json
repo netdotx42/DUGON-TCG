@@ -1,0 +1,30 @@
+{
+  "name": "Whirlpool Serpent (渦蛇)",
+  "description": "The tide turns wherever it coils. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/21.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Set",
+      "value": "tide-hollow"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 4,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 5,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 4,
+      "display_type": "number"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Rice Fox (稲狐)",
+  "description": "Guards the harvest. Takes a share. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/60.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Set",
+      "value": "moon-fox"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 2,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 2,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 3,
+      "display_type": "number"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Living Glyph (生字)",
+  "description": "A word written so well it stood up. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/87.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Set",
+      "value": "ink-scroll"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 4,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 5,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 4,
+      "display_type": "number"
+    }
+  ]
+}

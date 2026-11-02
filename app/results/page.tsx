@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import CardView from "@/components/CardView";
 import PixelSprite from "@/components/PixelSprite";
 import { Button, LinkButton, PageTitle } from "@/components/ui";
-import { CARDS, UNLOCK_XP } from "@/lib/cards";
+import { ORIGIN_CARDS, UNLOCK_XP } from "@/lib/cards";
 import { useProfile } from "@/lib/client/profile";
 
 const TEXT = {
@@ -16,7 +16,7 @@ const TEXT = {
 export default function ResultsPage() {
   const router = useRouter();
   const { lastResult: r, profile, unlocked } = useProfile();
-  const next = CARDS.find((c) => !unlocked.includes(c.id) && UNLOCK_XP[c.id] !== undefined);
+  const next = ORIGIN_CARDS.find((c) => !unlocked.includes(c.id) && UNLOCK_XP[c.id] !== undefined);
 
   const playAgain = () => {
     try {
@@ -43,10 +43,14 @@ export default function ResultsPage() {
       <h1 className="mt-2 animate-rise font-pixel text-2xl tracking-widest text-bone sm:text-4xl">{t.en}</h1>
       <p className="mt-3 font-mono text-sm text-ash">{t.line}</p>
 
-      <dl className="mt-8 grid w-full max-w-lg grid-cols-3 gap-3 font-pixel text-[10px]">
+      <dl className="mt-8 grid w-full max-w-lg grid-cols-2 gap-3 font-pixel text-[10px] sm:grid-cols-4">
         <div className="pixel-border-dim p-3">
           <dt className="text-ash">XP EARNED</dt>
           <dd className="mt-2 text-lg text-bone">+{r.xp}</dd>
+        </div>
+        <div className="pixel-border-dim p-3">
+          <dt className="text-ash">EMBERS</dt>
+          <dd className="mt-2 text-lg text-bone">+{r.embers ?? 0}</dd>
         </div>
         <div className="pixel-border-dim p-3">
           <dt className="text-ash">HP LEFT</dt>
@@ -88,8 +92,8 @@ export default function ResultsPage() {
         <LinkButton href="/deck" variant="ghost">
           Edit deck
         </LinkButton>
-        <LinkButton href="/collection" variant="ghost">
-          Collection
+        <LinkButton href="/packs" variant="ghost">
+          Open packs
         </LinkButton>
       </div>
     </div>

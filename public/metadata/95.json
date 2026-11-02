@@ -1,0 +1,30 @@
+{
+  "name": "Hollow Eye (虚眼)",
+  "description": "It does not blink. It does not need to. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/95.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Set",
+      "value": "void-gate"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 1,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 1,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 2,
+      "display_type": "number"
+    }
+  ]
+}

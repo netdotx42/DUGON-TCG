@@ -1,0 +1,34 @@
+{
+  "name": "Hundred Lights (百灯)",
+  "description": "Every lantern is an eye, and all are open. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/33.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Set",
+      "value": "lantern-night"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 4,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 3,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 6,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Keyword",
+      "value": "Guard"
+    }
+  ]
+}

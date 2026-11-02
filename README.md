@@ -13,8 +13,9 @@ This repository is a **testnet-only PvE demo** for Solana Devnet and Base Sepoli
 | **Home** | Oni-mask logo, featured cards, how it works |
 | **Connect** | Phantom (Solana Devnet) or MetaMask (Base Sepolia). Guest mode for people without a wallet (simulated) |
 | **Claim** | Free 5-card starter pack, once per wallet. Real ERC-1155 mint on Base Sepolia when a contract is configured, otherwise a server-verified signature + simulated claim |
-| **Collection** | All 10 original cards with cost, attack, HP, rarity and keyword. Cards 6–10 awaken with XP |
-| **Deck** | Pick exactly 5 different cards |
+| **Collection** | All 100 cards, filterable by set: the 10 origin cards (6–10 awaken with XP) plus the 15 pack sets |
+| **Packs** | Spend embers to open booster packs from any of 15 sets, at one of 5 tiers with published drop rates |
+| **Deck** | Pick exactly 5 different cards from the origin set and anything you've pulled from packs |
 | **Battle** | Turn-based PvE vs. the Oni Bot. Every action is validated on the server |
 | **Results** | Victory / defeat / draw, XP earned, newly awakened cards, Play again |
 
@@ -46,6 +47,40 @@ This repository is a **testnet-only PvE demo** for Solana Devnet and Base Sepoli
 
 Cards 1–5 are the starter pack (ERC-1155 token ids 1–5).
 
+### Card packs and tiers (`lib/packs.ts`)
+
+90 more original cards (token ids 11–100) come in **15 themed sets of 6**: two Commons, then one each of Uncommon, Rare, Epic and Legendary. All card stats and names live in `PACK_SETS` in `lib/cards.ts`, and the art is in `lib/sprites.ts`.
+
+| Set | | Theme |
+| --- | --- | --- |
+| Ember Shrine | 焔社 | shrine fire spirits |
+| Tide Hollow | 潮洞 | sea-cave spirits |
+| Cedar Peaks | 杉嶺 | mountain tengu and pilgrims |
+| Lantern Night | 提灯夜 | festival lanterns |
+| Bamboo Veil | 竹帳 | bamboo grove |
+| Iron Forge | 鉄工 | oni smithy |
+| Thunder Drum | 雷鼓 | storm spirits |
+| Bone Garden | 骨庭 | temple graveyard |
+| Moon Fox | 月狐 | fox spirits |
+| Frost Gate | 霜門 | winter spirits |
+| Mist Marsh | 霧沼 | marsh lights |
+| Silk Spider | 絹蜘 | weavers |
+| Ink Scroll | 墨巻 | living calligraphy |
+| Mask Theatre | 面舞 | stage masks |
+| Void Gate | 虚門 | the last gate |
+
+Packs cost **embers**. Every profile starts with 160, and each battle pays 1 ember per XP earned. A card you already own refunds embers (Common 5, Uncommon 10, Rare 20, Epic 40, Legendary 80).
+
+| Tier | Cards | Price | Unlocks at | Guarantee (last card) | Common / Uncommon / Rare / Epic / Legendary per slot |
+| --- | --- | --- | --- | --- | --- |
+| Paper 紙 | 3 | 40 | 0 XP | none | 60 / 25 / 10 / 4 / 1 % |
+| Bronze 銅 | 4 | 80 | 0 XP | Uncommon+ | 50 / 30 / 13 / 5 / 2 % |
+| Silver 銀 | 5 | 150 | 150 XP | Rare+ | 40 / 30 / 20 / 7 / 3 % |
+| Gold 金 | 5 | 300 | 350 XP | Epic+ | 25 / 30 / 25 / 15 / 5 % |
+| Obsidian 黒曜 | 5 | 600 | 700 XP | Legendary | 10 / 25 / 30 / 25 / 10 % |
+
+Pack pulls are **off-chain and simulated** (browser storage, `crypto.getRandomValues`). The ERC-1155 metadata and art for ids 11–100 are generated, but the contract still only mints the starter pack.
+
 ## Tech stack
 
 - **Next.js 16** (App Router) + TypeScript + Tailwind CSS, API routes for the backend
@@ -57,18 +92,19 @@ Cards 1–5 are the starter pack (ERC-1155 token ids 1–5).
 ## Project layout
 
 ```
-app/                    pages (home, connect, claim, collection, deck, battle, results)
+app/                    pages (home, connect, claim, collection, packs, deck, battle, results)
 app/api/auth/challenge  issues a signed sign-in message (nonce, expiry)
 app/api/claim           verifies a wallet signature, records a SIMULATED claim
 app/api/battle/start    validates the deck, creates a sealed battle
 app/api/battle/action   validates a player action, runs the bot turn
-lib/cards.ts            card definitions, deck validation, unlocks
+lib/cards.ts            card definitions (origin + 15 pack sets), deck validation, unlocks
+lib/packs.ts            pack sets, tiers, drop rates, pack opening
 lib/game/engine.ts      pure rules engine (shared by server and tests)
 lib/game/bot.ts         Oni Bot AI (only legal moves)
 lib/server/*            sealed battle tokens, wallet signature checks, claim store
 contracts/              Hardhat project: DugonStarterCards.sol, tests, deploy script
 tests/                  Vitest gameplay + server tests
-scripts/generate-assets.mts  card SVGs + ERC-1155 metadata into public/
+scripts/generate-assets.mts  card SVGs, pack covers + ERC-1155 metadata into public/
 SECURITY_AUDIT.md       security review: findings and fixes
 ```
 

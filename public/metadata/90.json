@@ -1,0 +1,30 @@
+{
+  "name": "Blank Mask (無面)",
+  "description": "Becomes whoever wore it last. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/90.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Set",
+      "value": "mask-theatre"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 2,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 2,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 3,
+      "display_type": "number"
+    }
+  ]
+}

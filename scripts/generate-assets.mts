@@ -1,4 +1,4 @@
-// Generates public/icon.svg, public/cards/{id}.svg and ERC-1155 metadata public/metadata/{id}.json
+// Generates public/icon.svg, public/cards/{id}.svg, ERC-1155 metadata public/metadata/{id}.json and pack covers public/packs/{slug}.svg
 // Run: node scripts/generate-assets.mts   (Node 22.18+ strips TypeScript types natively)
 import { mkdirSync, writeFileSync } from "node:fs";
 import { SPRITES, expandSprite } from "../lib/sprites.ts";
@@ -30,6 +30,7 @@ for (const c of CARDS) {
     image: `${base}/cards/${c.id}.svg`,
     attributes: [
       { trait_type: "Rarity", value: c.rarity },
+      { trait_type: "Set", value: c.pack ?? "origin" },
       { trait_type: "Cost", value: c.cost, display_type: "number" },
       { trait_type: "Attack", value: c.attack, display_type: "number" },
       { trait_type: "HP", value: c.hp, display_type: "number" },
@@ -38,4 +39,24 @@ for (const c of CARDS) {
   };
   writeFileSync(`public/metadata/${c.id}.json`, JSON.stringify(meta, null, 2) + "\n");
 }
-console.log(`Generated icon, ${CARDS.length} card SVGs and metadata (base ${base}).`);
+
+// Booster pack covers: the set's Legendary on a crimped, framed wrapper (one per set).
+function packSvg(sprite: string) {
+  const rows = expandSprite(SPRITES[sprite]);
+  let rects = "";
+  rows.forEach((row, y) =>
+    [...row].forEach((ch, x) => {
+      if (ch !== ".") rects += `<rect x="${x + 4}" y="${y + 6}" width="1" height="1" fill="${FILL[ch]}"/>`;
+    }),
+  );
+  let crimp = "";
+  for (let x = 0; x < 24; x += 2) crimp += `<rect x="${x}" y="0" width="1" height="1" fill="#2a2a28"/><rect x="${x + 1}" y="31" width="1" height="1" fill="#2a2a28"/>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 32" shape-rendering="crispEdges"><rect width="24" height="32" fill="#000"/>${crimp}<rect x="1" y="2" width="22" height="28" fill="none" stroke="#f5f5f0" stroke-width="0.5"/><rect x="3" y="25" width="18" height="1" fill="#c8102e"/>${rects}</svg>\n`;
+}
+mkdirSync("public/packs", { recursive: true });
+const packSlugs = [...new Set(CARDS.filter((c) => c.pack).map((c) => c.pack!))];
+for (const slug of packSlugs) {
+  const legendary = CARDS.find((c) => c.pack === slug && c.rarity === "Legendary")!;
+  writeFileSync(`public/packs/${slug}.svg`, packSvg(legendary.sprite));
+}
+console.log(`Generated icon, ${CARDS.length} card SVGs and metadata, ${packSlugs.length} pack covers (base ${base}).`);

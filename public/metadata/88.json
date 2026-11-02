@@ -1,0 +1,34 @@
+{
+  "name": "Sumie, Ink Sage (墨絵)",
+  "description": "Paints a demon, and the demon walks. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/88.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    },
+    {
+      "trait_type": "Set",
+      "value": "ink-scroll"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 5,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 5,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 5,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Keyword",
+      "value": "Swift"
+    }
+  ]
+}

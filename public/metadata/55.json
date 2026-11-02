@@ -1,0 +1,30 @@
+{
+  "name": "Rib Crawler (肋這)",
+  "description": "Scuttles between the graves on borrowed bones. DUGON TCG testnet demo card — no monetary value.",
+  "image": "https://dugon-tcg.vercel.app/cards/55.svg",
+  "attributes": [
+    {
+      "trait_type": "Rarity",
+      "value": "Uncommon"
+    },
+    {
+      "trait_type": "Set",
+      "value": "bone-garden"
+    },
+    {
+      "trait_type": "Cost",
+      "value": 2,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Attack",
+      "value": 3,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "HP",
+      "value": 2,
+      "display_type": "number"
+    }
+  ]
+}
