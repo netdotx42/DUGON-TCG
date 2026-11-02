@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import CardView from "@/components/CardView";
 import { Button, PageTitle } from "@/components/ui";
-import { CARD_BY_ID, CARDS, DECK_SIZE, UNLOCK_XP, validateDeck } from "@/lib/cards";
+import { CARD_BY_ID, CARDS, DECK_SIZE, UNLOCK_XP, bondedCount, validateDeck } from "@/lib/cards";
 
 const RARITY_RANK = { Common: 0, Uncommon: 1, Rare: 2, Epic: 3, Legendary: 4 } as const;
 import { useProfile } from "@/lib/client/profile";
@@ -27,6 +27,7 @@ export default function DeckPage() {
     setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : p.length < DECK_SIZE ? [...p, id] : p));
   const valid = validateDeck(picked);
   const curve = picked.reduce((s, id) => s + CARD_BY_ID[id].cost, 0);
+  const bonds = bondedCount(picked);
 
   return (
     <div>
@@ -37,7 +38,12 @@ export default function DeckPage() {
           <span className="neon-soft font-pixel text-xs">
             DECK {picked.length}/{DECK_SIZE}
           </span>
-          <span className="font-mono text-xs text-ash">Total cost {curve} · avg {picked.length ? (curve / picked.length).toFixed(1) : "–"}</span>
+          <span className="font-mono text-xs text-ash">
+            Total cost {curve} · avg {picked.length ? (curve / picked.length).toFixed(1) : "–"} ·{" "}
+            <span className={bonds ? "text-bone" : ""} title="Pack Bond: a unit summoned beside an ally from the same pack gains +1/+1.">
+              Pack Bond {bonds}/{picked.length}
+            </span>
+          </span>
         </div>
         <div className="flex min-h-[9.5rem] flex-wrap justify-center gap-3 sm:justify-start">
           {Array.from({ length: DECK_SIZE }, (_, i) =>

@@ -1,4 +1,4 @@
-import { CARD_BY_ID, validateDeck } from "../cards";
+import { CARD_BY_ID, cardSet, validateDeck } from "../cards";
 import { shuffle } from "./rng";
 
 export const HERO_HP = 20;
@@ -7,6 +7,11 @@ export const MAX_ROUNDS = 15;
 export const MAX_BOARD = 4;
 export const MAX_HAND = 5;
 export const STARTING_HAND = 2;
+/** Ember Strike: a once-per-turn hero power. */
+export const STRIKE_COST = 2;
+export const STRIKE_DAMAGE = 1;
+/** Pack Bond: stats a unit gains when summoned beside an ally from the same pack. */
+export const BOND_BONUS = 1;
 
 export type Side = "player" | "bot";
 
@@ -17,6 +22,8 @@ export interface Unit {
   hp: number;
   maxHp: number;
   canAttack: boolean;
+  /** Summoned beside an ally from the same pack (Pack Bond applied). */
+  bonded?: boolean;
 }
 
 export interface CardInHand {
@@ -32,6 +39,8 @@ export interface HeroState {
   hand: CardInHand[];
   board: Unit[];
   graveyard: CardInHand[];
+  /** Ember Strike already used this turn. Optional so older sealed battles still open. */
+  struck?: boolean;
 }
 
 export type Outcome = "win" | "loss" | "draw";
@@ -55,6 +64,7 @@ export interface GameState {
 export type Action =
   | { type: "play"; uid: number }
   | { type: "attack"; attacker: number; target: "hero" | number }
+  | { type: "strike"; target: "hero" | number }
   | { type: "end" };
 
 export class IllegalAction extends Error {
@@ -81,7 +91,7 @@ function makeHero(cardIds: number[], state: GameState): HeroState {
   const cards = cardIds.map((cardId) => ({ uid: state.nextUid++, cardId }));
   const [deck, seed] = shuffle(cards, state.seed);
   state.seed = seed;
-  return { hp: HERO_HP, energy: 0, maxEnergy: 0, deck, hand: [], board: [], graveyard: [] };
+  return { hp: HERO_HP, energy: 0, maxEnergy: 0, deck, hand: [], board: [], graveyard: [], struck: false };
 }
 
 function draw(state: GameState, side: Side) {
@@ -102,6 +112,7 @@ function startTurn(state: GameState, side: Side) {
   state.turn = side;
   h.maxEnergy = Math.min(MAX_ENERGY, state.round);
   h.energy = h.maxEnergy;
+  h.struck = false;
   h.board.forEach((u) => (u.canAttack = true));
   draw(state, side);
 }
@@ -157,6 +168,26 @@ function heal(h: HeroState, amount: number) {
   h.hp = Math.min(HERO_HP, h.hp + amount);
 }
 
+export { cardSet };
+
+/** Whether summoning `cardId` now would trigger Pack Bond for this hero. */
+export function bondsWith(h: HeroState, cardId: number): boolean {
+  const set = cardSet(cardId);
+  return h.board.some((u) => cardSet(u.cardId) === set);
+}
+
+/** Whether a hero can use Ember Strike right now (turn ownership is checked by applyAction). */
+export function canStrike(h: HeroState): boolean {
+  return !h.struck && h.energy >= STRIKE_COST;
+}
+
+function removeIfDead(state: GameState, h: HeroState, u: Unit) {
+  if (u.hp > 0) return;
+  h.board = h.board.filter((x) => x.uid !== u.uid);
+  h.graveyard.push({ uid: u.uid, cardId: u.cardId });
+  pushLog(state, `${cardName(u.cardId)} falls.`);
+}
+
 /**
  * Apply one action for `side`. Pure: returns a new state, never mutates input.
  * Throws IllegalAction for anything that breaks the rules.
@@ -177,16 +208,20 @@ export function applyAction(input: GameState, side: Side, action: Action): GameS
       if (card.cost > me.energy) throw new IllegalAction("Not enough energy");
       if (me.board.length >= MAX_BOARD) throw new IllegalAction("Board is full");
       me.energy -= card.cost;
+      const bonded = bondsWith(me, card.id);
+      const bonus = bonded ? BOND_BONUS : 0;
       const [played] = me.hand.splice(idx, 1);
       me.board.push({
         uid: played.uid,
         cardId: card.id,
-        attack: card.attack,
-        hp: card.hp,
-        maxHp: card.hp,
+        attack: card.attack + bonus,
+        hp: card.hp + bonus,
+        maxHp: card.hp + bonus,
         canAttack: card.keyword === "Swift",
+        ...(bonded ? { bonded: true } : {}),
       });
       pushLog(state, `${label(side)} summoned ${card.name}.`);
+      if (bonded) pushLog(state, `Pack Bond: ${card.name} gains +${bonus}/+${bonus}.`);
       break;
     }
     case "attack": {
@@ -210,13 +245,26 @@ export function applyAction(input: GameState, side: Side, action: Action): GameS
         if (leech) heal(me, dealt);
         if (CARD_BY_ID[defender.cardId].keyword === "Leech") heal(foe, taken);
         pushLog(state, `${cardName(attacker.cardId)} clashes with ${cardName(defender.cardId)}.`);
-        for (const [h, u] of [[foe, defender], [me, attacker]] as const) {
-          if (u.hp <= 0) {
-            h.board = h.board.filter((x) => x.uid !== u.uid);
-            h.graveyard.push({ uid: u.uid, cardId: u.cardId });
-            pushLog(state, `${cardName(u.cardId)} falls.`);
-          }
-        }
+        removeIfDead(state, foe, defender);
+        removeIfDead(state, me, attacker);
+      }
+      checkHeroDeath(state);
+      break;
+    }
+    case "strike": {
+      if (me.struck) throw new IllegalAction("Ember Strike already used this turn");
+      if (me.energy < STRIKE_COST) throw new IllegalAction("Not enough energy");
+      if (!legalTargets(state, side).includes(action.target)) throw new IllegalAction("Illegal target");
+      me.energy -= STRIKE_COST;
+      me.struck = true;
+      if (action.target === "hero") {
+        foe.hp -= STRIKE_DAMAGE;
+        pushLog(state, `${label(side)} cast Ember Strike on ${label(other(side))} for ${STRIKE_DAMAGE}.`);
+      } else {
+        const target = foe.board.find((u) => u.uid === action.target)!;
+        target.hp -= STRIKE_DAMAGE;
+        pushLog(state, `${label(side)} cast Ember Strike on ${cardName(target.cardId)} for ${STRIKE_DAMAGE}.`);
+        removeIfDead(state, foe, target);
       }
       checkHeroDeath(state);
       break;
@@ -260,6 +308,7 @@ export function publicView(state: GameState) {
     handCount: h.hand.length,
     deckCount: h.deck.length,
     graveyardCount: h.graveyard.length,
+    struck: !!h.struck,
   });
   return {
     battleId: state.battleId,

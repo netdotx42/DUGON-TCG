@@ -1,5 +1,5 @@
 import { CARD_BY_ID } from "../cards";
-import { Action, GameState, MAX_BOARD, applyAction, legalTargets } from "./engine";
+import { Action, GameState, MAX_BOARD, STRIKE_DAMAGE, applyAction, canStrike, legalTargets } from "./engine";
 
 /** Pick the bot's next legal action. Always returns a legal move ("end" when nothing else is useful). */
 export function chooseBotAction(state: GameState): Action {
@@ -35,6 +35,16 @@ export function chooseBotAction(state: GameState): Action {
     const weakest = units.slice().sort((a, b) => a.hp - b.hp)[0];
     const target = kill ?? weakest;
     if (target) return { type: "attack", attacker: attacker.uid, target: target.uid };
+  }
+
+  // 3. Spend leftover energy on Ember Strike: finish off the best unit it can kill, else hit the hero.
+  if (canStrike(me)) {
+    const targets = legalTargets(state, "bot");
+    const killable = foe.board
+      .filter((u) => targets.includes(u.uid) && u.hp <= STRIKE_DAMAGE)
+      .sort((a, b) => CARD_BY_ID[b.cardId].cost - CARD_BY_ID[a.cardId].cost);
+    if (killable.length > 0) return { type: "strike", target: killable[0].uid };
+    if (targets.includes("hero")) return { type: "strike", target: "hero" };
   }
   return { type: "end" };
 }

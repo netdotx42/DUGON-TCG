@@ -84,6 +84,19 @@ describe("battle API", () => {
     const replay = await actionPOST(post({ token: start.token, action: { type: "end" } }));
     expect(replay.status).toBe(409);
   });
+  it("validates Ember Strike on the server", async () => {
+    _resetReplayGuard();
+    const start = await (await startPOST(post({ deck: [1, 2, 3, 4, 5], xp: 0 }))).json();
+    const malformed = await actionPOST(post({ token: start.token, action: { type: "strike", target: "face" } }));
+    expect(malformed.status).toBe(400);
+    // Round 1: only 1 energy, so the strike is rejected by the engine.
+    const poor = await actionPOST(post({ token: start.token, action: { type: "strike", target: "hero" } }));
+    expect(poor.status).toBe(422);
+    expect((await poor.json()).error).toMatch(/energy/);
+    const r2 = await (await actionPOST(post({ token: start.token, action: { type: "end" } }))).json();
+    expect(r2.view.player.energy).toBe(2);
+    expect(r2.view.player.struck).toBe(false);
+  });
   it("still allows a fresh state on a different instance-like guard reset", () => {
     expect(checkAndRecord("x", 3)).toBe(true);
     expect(checkAndRecord("x", 2)).toBe(false);
