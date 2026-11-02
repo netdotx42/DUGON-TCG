@@ -53,10 +53,10 @@ export default function ResultsPage() {
           <dd className="neon-soft mt-2 text-lg">+{r.embers ?? 0}</dd>
         </div>
         <div className="pixel-border-dim p-3">
-          <dt className="text-ash">HP LEFT</dt>
+          <dt className="text-ash">HP YOU · BOT</dt>
           <dd className="neon-soft mt-2 text-lg">
             {Math.max(0, r.playerHp)}
-            <span className="text-ash">:{Math.max(0, r.botHp)}</span>
+            <span className="text-ash"> · {Math.max(0, r.botHp)}</span>
           </dd>
         </div>
         <div className="pixel-border-dim p-3">

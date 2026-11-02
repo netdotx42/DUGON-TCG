@@ -31,6 +31,8 @@ export default function PacksPage() {
     if (!result) return;
     setPull(result);
     setRevealed(0);
+    // The Open button sits low on long pages; bring the reveal into view from the top.
+    window.scrollTo({ top: 0 });
   };
 
   if (pull) {
@@ -62,7 +64,14 @@ export default function PacksPage() {
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           {done ? (
             <>
-              <Button onClick={() => setPull(null)}>Back to packs</Button>
+              <Button
+                onClick={() => {
+                  setPull(null);
+                  window.scrollTo({ top: 0 });
+                }}
+              >
+                Back to packs
+              </Button>
               <LinkButton href="/deck" variant="ghost">
                 Build a deck
               </LinkButton>

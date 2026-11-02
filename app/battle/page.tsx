@@ -280,7 +280,7 @@ export default function BattlePage() {
             onTarget={() => attacker !== null && send({ type: "attack", attacker, target: "hero" })}
           />
           <div className="flex min-h-[7.5rem] items-center justify-center gap-2 border-b border-dashed border-smoke pb-3" aria-label="Enemy board">
-            {view.bot.board.length === 0 && <span className="font-mono text-xs text-smoke">empty field</span>}
+            {view.bot.board.length === 0 && <span className="font-mono text-xs text-ash">empty field</span>}
             {view.bot.board.map((u) => (
               <UnitView
                 key={u.uid}
@@ -314,7 +314,7 @@ export default function BattlePage() {
 
           {/* Player side */}
           <div className="flex min-h-[7.5rem] items-center justify-center gap-2 border-t border-dashed border-smoke pt-3" aria-label="Your board">
-            {view.player.board.length === 0 && <span className="font-mono text-xs text-smoke">summon a spirit from your hand</span>}
+            {view.player.board.length === 0 && <span className="font-mono text-xs text-ash">summon a spirit from your hand</span>}
             {view.player.board.map((u) => (
               <UnitView
                 key={u.uid}
@@ -337,7 +337,7 @@ export default function BattlePage() {
           />
 
           <div aria-label="Your hand" className="flex gap-2 overflow-x-auto pb-2 pt-3">
-            {view.player.hand.length === 0 && <span className="font-mono text-xs text-smoke">no cards in hand</span>}
+            {view.player.hand.length === 0 && <span className="font-mono text-xs text-ash">no cards in hand</span>}
             {view.player.hand.map((c) => {
               const card = CARD_BY_ID[c.cardId];
               const playable = myTurn && card.cost <= view.player.energy && view.player.board.length < MAX_BOARD;
@@ -362,7 +362,7 @@ export default function BattlePage() {
               </li>
             ))}
           </ol>
-          <p className="mt-3 border-t border-smoke pt-2 font-mono text-[10px] text-smoke">Every move is validated on the server.</p>
+          <p className="mt-3 border-t border-smoke pt-2 font-mono text-[10px] text-ash">Every move is validated on the server.</p>
         </aside>
       </div>
 
