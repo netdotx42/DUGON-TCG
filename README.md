@@ -1,10 +1,85 @@
-# DUGON TCG 鬼
+<div align="center">
 
-A minimalist dark-fantasy trading card game with white pixel-art oni on a black field.
-This repository is a **testnet-only PvE demo** for Solana Devnet and Base Sepolia.
+<img src="public/icon.svg" width="112" alt="DUGON oni mask">
 
-> No payments, no token economy, no marketplace, no bridging, no mainnet transactions.
+# D U G O N &nbsp;鬼
+
+**Summon oni. Break the gate. Before the fifteenth bell.**
+
+A dark-fantasy pixel trading card game where every move is judged by the server.
+Free to play. No wallet required.
+
+[**▶ Play now: dugon-tcg.vercel.app**](https://dugon-tcg.vercel.app)
+
+![Testnet only](https://img.shields.io/badge/testnet-only-c8102e?style=flat-square&labelColor=0a0a0a)
+![Solana Devnet](https://img.shields.io/badge/Solana-Devnet-f5f5f0?style=flat-square&labelColor=0a0a0a)
+![Base Sepolia](https://img.shields.io/badge/Base-Sepolia-f5f5f0?style=flat-square&labelColor=0a0a0a)
+![Next.js 16](https://img.shields.io/badge/Next.js-16-f5f5f0?style=flat-square&labelColor=0a0a0a)
+![Cards](https://img.shields.io/badge/cards-100-c8102e?style=flat-square&labelColor=0a0a0a)
+
+<img src="docs/readme/desktop-home.png" width="860" alt="DUGON home screen">
+
+</div>
+
+---
+
+## 鬼 The pitch
+
+White pixel spirits on a black field, red neon glow and drifting embers. DUGON is a fast, five-card duel against the **Oni Bot**: build a deck, open booster packs, and race to break the enemy hero before round fifteen.
+
+- **100 original cards** drawn pixel by pixel: 10 origin spirits plus **15 themed booster sets**, from Ember Shrine to the Void Gate.
+- **5 pack tiers**, Paper to Obsidian, each with published drop rates and a guaranteed pull.
+- **Ember Strike.** A hero power you control: 2 energy, 1 damage, once per turn. Finish a unit or chip the hero.
+- **Pack Bond.** Summon a spirit beside an ally from the same pack and it rises +1/+1. Decks built around a set hit harder.
+- **A bot that fights back.** The Oni Bot looks ahead at every legal move and picks the best one, and it brings tougher decks as you level up.
+- **Nothing to cheat.** The rules engine runs on the server, the battle state is sealed with AES-256-GCM, and the browser never sees the bot's hand or the shuffle.
+- **Bring a wallet, or don't.** Sign in with Phantom on Solana Devnet or MetaMask on Base Sepolia, or jump straight in as a guest.
+
+<div align="center">
+
+<img src="public/cards/10.svg" width="72" alt="card 10"> <img src="public/cards/16.svg" width="72" alt="card 16"> <img src="public/cards/34.svg" width="72" alt="card 34"> <img src="public/cards/52.svg" width="72" alt="card 52"> <img src="public/cards/76.svg" width="72" alt="card 76"> <img src="public/cards/100.svg" width="72" alt="card 100">
+
+<sub>A few of the Legendaries waiting behind the gate</sub>
+
+</div>
+
+## ⚔ See it
+
+<table>
+<tr>
+<td width="62%"><img src="docs/readme/desktop-battle.png" alt="Battle: Pack Bond units on the board"></td>
+<td width="38%"><img src="docs/readme/mobile-battle.png" alt="Battle on a phone"></td>
+</tr>
+<tr>
+<td colspan="2">
+<img src="docs/readme/desktop-pack-open.png" width="49%" alt="Opening an Ember Shrine pack">
+<img src="docs/readme/desktop-collection.png" width="49%" alt="Collection of 100 cards">
+</td>
+</tr>
+</table>
+
+## 🔥 Sixty seconds to your first battle
+
+1. Open **[dugon-tcg.vercel.app](https://dugon-tcg.vercel.app)** and hit **Enter the gate**.
+2. Connect Phantom or MetaMask, or choose **Play as guest**.
+3. Claim your free **5-card starter pack**.
+4. Spend your **160 starting embers** on a booster, then pick your five.
+5. Fight. Win XP, earn embers, awaken Fox Shade, Bone Monk, Crow Tengu, Thunder Oni and Kurogane.
+
+Run it yourself:
+
+```bash
+npm install
+cp .env.example .env.local      # set GAME_SECRET (openssl rand -hex 32)
+npm run dev                     # http://localhost:3000
+```
+
+> **Testnet only.** No payments, no token economy, no marketplace, no bridging, no mainnet transactions.
 > Simulated claims are clearly labelled **SIMULATED · DEMO ONLY** in the UI.
+
+---
+
+# The details
 
 ## What's in the demo
 
