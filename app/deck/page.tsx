@@ -39,7 +39,7 @@ export default function DeckPage() {
           </span>
           <span className="font-mono text-xs text-ash">Total cost {curve} · avg {picked.length ? (curve / picked.length).toFixed(1) : "–"}</span>
         </div>
-        <div className="flex min-h-[9.5rem] gap-3 overflow-x-auto">
+        <div className="flex min-h-[9.5rem] flex-wrap justify-center gap-3 sm:justify-start">
           {Array.from({ length: DECK_SIZE }, (_, i) =>
             picked[i] ? (
               <CardView key={picked[i]} id={picked[i]} size="sm" onClick={() => toggle(picked[i])} />

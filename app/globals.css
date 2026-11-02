@@ -200,9 +200,9 @@ body {
 }
 
 /* ---------- Buttons ---------- */
+/* No clip-path here: it would also clip the glow and the keyboard focus ring. */
 .btn {
   position: relative;
-  clip-path: polygon(0 4px, 4px 4px, 4px 0, calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px));
 }
 .btn-primary {
   background: linear-gradient(180deg, #e3203c, #a70c25);
@@ -290,6 +290,7 @@ body {
   border-top: 2px solid #2a2a28;
   border-bottom: 2px solid #2a2a28;
   background: linear-gradient(90deg, rgba(40, 6, 12, 0.9), rgba(8, 3, 4, 0.9) 30%, rgba(8, 3, 4, 0.9) 70%, rgba(40, 6, 12, 0.9));
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 }
 .marquee-track {
@@ -389,6 +390,10 @@ body {
     linear-gradient(0deg, rgba(255, 60, 30, 0.35), transparent);
   animation: flicker 1.8s ease-in-out infinite;
   image-rendering: pixelated;
+}
+.tier-card:focus-visible {
+  outline: 2px solid #fff !important;
+  outline-offset: 3px !important;
 }
 .tier-card[aria-pressed="true"] {
   background: rgba(40, 8, 14, 0.9);
