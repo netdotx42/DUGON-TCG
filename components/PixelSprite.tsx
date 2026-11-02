@@ -4,7 +4,20 @@ import { SPRITES, expandSprite } from "@/lib/sprites";
 const FILL: Record<string, string> = { "#": "#f5f5f0", "+": "#8a8a85", r: "#c8102e" };
 
 /** Renders a 16x16 sprite as crisp SVG rects. Consecutive pixels in a row are merged. */
-export default function PixelSprite({ name, size = 64, className = "", title }: { name: string; size?: number; className?: string; title?: string }) {
+export default function PixelSprite({
+  name,
+  size = 64,
+  className = "",
+  title,
+  mono,
+}: {
+  name: string;
+  size?: number;
+  className?: string;
+  title?: string;
+  /** Paint every pixel in one colour (used for faint background silhouettes). */
+  mono?: string;
+}) {
   const sprite = SPRITES[name];
   if (!sprite) return null;
   const rows = expandSprite(sprite);
@@ -19,7 +32,7 @@ export default function PixelSprite({ name, size = 64, className = "", title }: 
       }
       let w = 1;
       while (row[x + w] === ch) w++;
-      rects.push(<rect key={`${x}-${y}`} x={x} y={y} width={w} height={1} fill={FILL[ch] ?? FILL["#"]} />);
+      rects.push(<rect key={`${x}-${y}`} x={x} y={y} width={w} height={1} fill={mono ?? FILL[ch] ?? FILL["#"]} />);
       x += w;
     }
   });

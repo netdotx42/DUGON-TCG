@@ -3,7 +3,7 @@
 import { useState } from "react";
 import CardView from "@/components/CardView";
 import PackView from "@/components/PackView";
-import { Button, DemoBadge, LinkButton, PageTitle } from "@/components/ui";
+import { Button, DemoBadge, EmberPill, LinkButton, PageTitle, SectionLabel } from "@/components/ui";
 import { CARD_BY_ID } from "@/lib/cards";
 import { PACKS, PACK_BY_SLUG, RARITY_ORDER, TIERS, TIER_BY_ID, TierId, rarityOdds } from "@/lib/packs";
 import { PackPull, useProfile } from "@/lib/client/profile";
@@ -85,53 +85,68 @@ export default function PacksPage() {
         title="Card packs"
         sub="Fifteen sets of six spirits each. Pick a set, pick a tier, and spend embers to open it. You earn one ember for every XP from battle."
       />
-      <div className="mb-6 flex flex-wrap items-center gap-4">
-        <span className="pixel-border px-3 py-2 font-pixel text-[10px] text-bone">
-          <span className="text-blood">◆</span> {profile.embers} EMBERS
-        </span>
-        <span className="font-mono text-xs text-ash">
+      <div className="mb-5 flex flex-wrap items-center gap-x-6 gap-y-3">
+        <EmberPill embers={profile.embers} />
+        <span className="font-mono text-sm text-bone sm:text-base">
           {profile.xp} XP · {profile.packsOpened} packs opened
         </span>
+      </div>
+      <div className="mb-10">
         <DemoBadge>Off-chain demo pulls · no real value</DemoBadge>
       </div>
 
-      <section aria-label="Pack tier" className="mb-8">
-        <h2 className="mb-3 font-pixel text-[10px] text-ash">TIER</h2>
-        <div className="flex flex-wrap gap-2">
+      <section aria-label="Pack tier" className="mb-12">
+        <SectionLabel className="mb-5">TIER</SectionLabel>
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
           {TIERS.map((t) => {
             const locked = profile.xp < t.minXp;
+            const gilded = t.id === "bronze" || t.id === "gold";
+            const obsidian = t.id === "obsidian";
             return (
               <button
                 key={t.id}
                 type="button"
                 onClick={() => setTierId(t.id)}
                 aria-pressed={tierId === t.id}
-                className={`tier-${t.id} px-4 py-3 text-left transition ${tierId === t.id ? "bg-smoke" : "bg-ink hover:bg-smoke/60"} ${locked ? "opacity-50" : ""}`}
+                className={`tier-card tier-card-${t.id} ${locked ? "opacity-60 hover:opacity-90" : ""} px-3 py-4 text-left sm:px-5 sm:py-5 ${obsidian ? "col-span-2 mx-auto w-full sm:w-2/3 lg:col-span-1 lg:w-auto" : ""}`}
               >
-                <div className="font-pixel text-[9px] text-bone">
-                  {t.name} <span className="font-mono text-ash">{t.jp}</span>
+                {locked && <span className="absolute right-2 top-2 bg-smoke px-1 font-pixel text-[7px] text-bone/80">LOCKED</span>}
+                <div className="flex items-baseline gap-3">
+                  <span className={`font-pixel text-[11px] sm:text-sm ${obsidian ? "neon-soft" : gilded ? "text-amber" : "text-bone"}`}>{t.name}</span>
+                  <span className={`font-mono text-sm sm:text-base ${obsidian ? "neon-soft" : "text-bone/80"}`}>{t.jp}</span>
                 </div>
-                <div className="mt-1 font-mono text-[10px] text-ash">
+                <div className={`mt-3 font-mono text-xs sm:text-sm ${obsidian ? "neon-soft" : "text-bone/90"}`}>
                   {t.size} cards · {t.price} embers
                 </div>
-                <div className="font-mono text-[10px] text-ash">{locked ? `Unlocks at ${t.minXp} XP` : t.guarantee ? `${t.guarantee}+ guaranteed` : "No guarantee"}</div>
+                <div className={`font-mono text-xs sm:text-sm ${obsidian ? "neon-soft" : "text-bone/90"}`}>
+                  {locked ? (
+                    <>
+                      Unlocks at {t.minXp} XP
+                    </>
+                  ) : t.guarantee ? (
+                    `${t.guarantee}+ guaranteed`
+                  ) : (
+                    "No guarantee"
+                  )}
+                </div>
               </button>
             );
           })}
         </div>
       </section>
 
+      <SectionLabel className="mb-5">SET</SectionLabel>
       <div className="grid gap-8 lg:grid-cols-[1fr_20rem]">
         <section aria-label="Pack sets" className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
           {PACKS.map((p, i) => (
             <div key={p.slug} className="animate-rise" style={{ animationDelay: `${i * 30}ms` }}>
-              <PackView pack={p.slug} tier={tierId} size="md" selected={slug === p.slug} onClick={() => setSlug(p.slug)} />
+              <PackView pack={p.slug} tier={tierId} size="md" selected={slug === p.slug} onClick={() => setSlug(p.slug)} className="glow-hover" />
             </div>
           ))}
         </section>
 
-        <aside className="pixel-border h-fit p-5 lg:sticky lg:top-32" aria-live="polite">
-          <div className="font-pixel text-xs text-bone">{pack.name}</div>
+        <aside className="panel h-fit p-5 lg:sticky lg:top-36" aria-live="polite">
+          <div className="neon-soft font-pixel text-sm">{pack.name}</div>
           <div className="font-mono text-sm text-ash">
             {pack.jp} · {tier.name} tier
           </div>

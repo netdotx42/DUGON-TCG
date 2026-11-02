@@ -34,7 +34,7 @@ export default function DeckPage() {
 
       <section aria-label="Selected deck" className="pixel-border-dim mb-8 p-4">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-          <span className="font-pixel text-[10px] text-bone">
+          <span className="neon-soft font-pixel text-xs">
             DECK {picked.length}/{DECK_SIZE}
           </span>
           <span className="font-mono text-xs text-ash">Total cost {curve} · avg {picked.length ? (curve / picked.length).toFixed(1) : "–"}</span>
@@ -44,7 +44,7 @@ export default function DeckPage() {
             picked[i] ? (
               <CardView key={picked[i]} id={picked[i]} size="sm" onClick={() => toggle(picked[i])} />
             ) : (
-              <div key={`slot-${i}`} className="pixel-border-dim flex w-[6.5rem] shrink-0 items-center justify-center font-pixel text-[8px] text-smoke">
+              <div key={`slot-${i}`} className="pixel-border-dim flex w-[6.5rem] shrink-0 items-center justify-center font-pixel text-[8px] text-ash/60">
                 EMPTY
               </div>
             ),
@@ -72,7 +72,7 @@ export default function DeckPage() {
         })}
       </div>
 
-      <div className="sticky bottom-0 mt-8 flex flex-wrap gap-3 border-t border-smoke bg-ink/95 py-4">
+      <div className="sticky bottom-0 z-20 mt-8 flex flex-wrap gap-3 bg-ink/90 py-4 backdrop-blur-md shadow-[0_-2px_0_#c8102e,0_-8px_20px_rgba(200,16,46,0.25)]">
         <Button
           disabled={!valid}
           onClick={() => {

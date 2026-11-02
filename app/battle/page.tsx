@@ -368,8 +368,8 @@ export default function BattlePage() {
 
       {view.over && !botActing && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-ink/85 p-4" role="dialog" aria-modal="true" aria-label="Battle result">
-          <div className="pixel-border animate-rise bg-ink p-8 text-center">
-            <div className="font-mono text-3xl text-blood">{view.outcome === "win" ? "勝利" : view.outcome === "loss" ? "敗北" : "引分"}</div>
+          <div className="panel panel-red animate-rise p-8 text-center">
+            <div className="neon font-mono text-3xl">{view.outcome === "win" ? "勝利" : view.outcome === "loss" ? "敗北" : "引分"}</div>
             <div className="mt-2 font-pixel text-xl text-bone">{view.outcome === "win" ? "VICTORY" : view.outcome === "loss" ? "DEFEAT" : "DRAW"}</div>
             <p className="mt-3 font-mono text-xs text-ash">+{view.xp} XP</p>
             <div className="mt-6 flex justify-center gap-3">

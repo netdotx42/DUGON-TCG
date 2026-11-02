@@ -47,7 +47,7 @@ export default function CollectionPage() {
                 setFocus(ids[0]);
               }}
               aria-pressed={set === p.slug}
-              className={`px-2 py-1 font-pixel text-[8px] ${set === p.slug ? "bg-bone text-ink" : "pixel-border-dim text-ash hover:text-bone"}`}
+              className={`min-h-[36px] px-3 py-2 font-pixel text-[8px] transition sm:text-[9px] ${set === p.slug ? "btn btn-primary" : "pixel-border-dim text-bone/70 hover:text-bone hover:shadow-[inset_0_0_0_2px_#ff3048]"}`}
             >
               {p.name} <span className="font-mono">{have}/{ids.length}</span>
             </button>
@@ -77,24 +77,24 @@ export default function CollectionPage() {
           })}
         </div>
 
-        <aside className="pixel-border h-fit p-5 lg:sticky lg:top-32" aria-live="polite">
+        <aside className="panel h-fit p-5 lg:sticky lg:top-36" aria-live="polite">
           <div className="flex justify-center">
-            <PixelSprite name={f.sprite} size={144} />
+            <PixelSprite name={f.sprite} size={144} className="drop-shadow-[0_0_18px_rgba(255,36,60,0.45)]" />
           </div>
-          <div className="mt-4 font-pixel text-xs text-bone">{f.name}</div>
+          <div className="neon-soft mt-4 font-pixel text-sm">{f.name}</div>
           <div className="font-mono text-sm text-ash">
             {f.jp} · {f.rarity}
           </div>
           <dl className="mt-4 grid grid-cols-3 gap-2 text-center font-pixel text-[10px]">
-            <div className="bg-smoke p-2">
+            <div className="pixel-border-dim p-2">
               <dt className="text-ash">COST</dt>
               <dd className="mt-1 text-bone">{f.cost}</dd>
             </div>
-            <div className="bg-smoke p-2">
+            <div className="pixel-border-dim p-2">
               <dt className="text-ash">ATK</dt>
               <dd className="mt-1 text-bone">{f.attack}</dd>
             </div>
-            <div className="bg-smoke p-2">
+            <div className="pixel-border-dim p-2">
               <dt className="text-ash">HP</dt>
               <dd className="mt-1 text-bone">{f.hp}</dd>
             </div>
