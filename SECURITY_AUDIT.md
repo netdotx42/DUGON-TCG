@@ -26,7 +26,7 @@ Status legend: **Fixed** = change made and covered by a passing test or build ch
 | 12 | Low | Progression (XP, deck) stored client-side | Accepted |
 | 13 | Low | Simulated claim registry is ephemeral on Vercel | Accepted |
 | 14 | Medium | No rate limiting on API routes | Open (recommendation) |
-| 15 | Low | No Content-Security-Policy | Open (recommendation) |
+| 15 | Low | No Content-Security-Policy | Mitigated |
 | 16 | Low | Single-key contract owner | Accepted |
 
 ## Findings
@@ -91,8 +91,11 @@ Simulated claims are stored in `.data/claims.json` locally and `/tmp/dugon` on V
 ### 14. No rate limiting — Medium — Open
 API routes do bounded work (request bodies capped at 2–70 KB, at most 50 bot actions per turn) but are not rate limited. **Recommendation:** enable the Vercel Firewall rate-limit rule or add Upstash rate limiting on `/api/*`.
 
-### 15. No Content-Security-Policy — Low — Open
-`X-Content-Type-Options`, `X-Frame-Options: DENY`, `Referrer-Policy` and `Permissions-Policy` are set in `next.config.mjs`. A strict CSP is not set yet because wallet providers inject scripts; add one with `connect-src` limited to the two RPC endpoints when hardening.
+### 15. No Content-Security-Policy — Low — Mitigated
+`X-Content-Type-Options`, `X-Frame-Options: DENY`, `Referrer-Policy` and `Permissions-Policy` are set in `next.config.mjs`, and Vercel adds HSTS.
+**Fix:** a Content-Security-Policy is now sent on every route: `default-src 'self'`, `object-src 'none'`, `base-uri 'self'`, `form-action 'self'`, `frame-ancestors 'none'`, images/fonts from self or `data:`.
+**Residual risk:** `script-src` still allows `'unsafe-inline'` (Next.js inline bootstrap scripts) and `connect-src` allows any `https:`/`wss:` origin so custom RPC env vars keep working. **Recommendation:** move to nonce-based scripts and pin `connect-src` to the configured RPC hosts.
+**Verified:** full guest flow (connect, claim, pack, deck, battle, results) on desktop and mobile viewports in a production build with no CSP violations in the console.
 
 ### 16. Single-key contract owner — Low — Accepted
 The owner can only change the metadata base URI (`setBaseURI`). It cannot mint, burn or move player tokens. Consider `Ownable2Step` or a multisig for anything beyond testnet.
