@@ -11,7 +11,7 @@ import { PackPull, useProfile } from "@/lib/client/profile";
 const pct = (x: number) => (x === 0 ? "–" : x < 0.01 ? "<1%" : `${Math.round(x * 100)}%`);
 
 export default function PacksPage() {
-  const { profile, unlocked, identity, buyPack } = useProfile();
+  const { ready, profile, unlocked, identity, buyPack } = useProfile();
   const [slug, setSlug] = useState(PACKS[0].slug);
   const [tierId, setTierId] = useState<TierId>("paper");
   const [pull, setPull] = useState<PackPull | null>(null);
@@ -166,7 +166,9 @@ export default function PacksPage() {
           </div>
 
           <div className="mt-5">
-            {!identity ? (
+            {!ready ? (
+              <div className="h-[2.6rem]" aria-hidden />
+            ) : !identity ? (
               <LinkButton href="/connect">Connect to open packs</LinkButton>
             ) : !claimed ? (
               <LinkButton href="/claim">Claim starter pack first</LinkButton>

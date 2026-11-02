@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useAccount, useConnect } from "wagmi";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletReadyState, WalletName } from "@solana/wallet-adapter-base";
@@ -8,13 +8,22 @@ import { BASE_SEPOLIA_ID } from "../chains";
 
 const PHANTOM = "Phantom" as WalletName<"Phantom">;
 
+const noopSubscribe = () => () => {};
+/** False during SSR and hydration, true afterwards, so wallet detection never causes a hydration mismatch. */
+function useHydrated() {
+  return useSyncExternalStore(noopSubscribe, () => true, () => false);
+}
+
 /** Phantom (Solana) connection helper: select → connect once the adapter is selected. */
 export function usePhantom() {
   const sol = useWallet();
   const [wantConnect, setWantConnect] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const hydrated = useHydrated();
   const phantom = sol.wallets.find((w) => w.adapter.name === PHANTOM);
-  const installed = phantom?.readyState === WalletReadyState.Installed || phantom?.readyState === WalletReadyState.Loadable;
+  // The adapter reports Loadable/Installed synchronously on the client (e.g. mobile Safari),
+  // which differs from the server render; only trust it after hydration.
+  const installed = hydrated && (phantom?.readyState === WalletReadyState.Installed || phantom?.readyState === WalletReadyState.Loadable);
 
   useEffect(() => {
     if (!wantConnect || sol.wallet?.adapter.name !== PHANTOM || sol.connected || sol.connecting) return;
