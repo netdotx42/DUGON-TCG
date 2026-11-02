@@ -211,6 +211,18 @@ export function unlockedCardIds(claimed: boolean, xp: number, owned: Record<stri
   ).map((c) => c.id);
 }
 
+/** The set a card belongs to for Pack Bond: its booster pack, or "origin" for the first ten cards. */
+export function cardSet(cardId: number): string {
+  return CARD_BY_ID[cardId]?.pack ?? "origin";
+}
+
+/** How many cards in a deck share a set with at least one other card in it (can trigger Pack Bond). */
+export function bondedCount(deck: number[]): number {
+  const counts = new Map<string, number>();
+  for (const id of deck) counts.set(cardSet(id), (counts.get(cardSet(id)) ?? 0) + 1);
+  return deck.filter((id) => (counts.get(cardSet(id)) ?? 0) >= 2).length;
+}
+
 /** A deck is exactly 5 distinct, valid card ids. */
 export function validateDeck(deck: unknown): deck is number[] {
   return (

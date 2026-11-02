@@ -15,6 +15,9 @@ function parseAction(a: unknown): Action | null {
   if (o.type === "attack" && isId(o.attacker) && (o.target === "hero" || isId(o.target))) {
     return { type: "attack", attacker: o.attacker, target: o.target as "hero" | number };
   }
+  if (o.type === "strike" && (o.target === "hero" || isId(o.target))) {
+    return { type: "strike", target: o.target as "hero" | number };
+  }
   return null;
 }
 

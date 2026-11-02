@@ -6,7 +6,7 @@ import CardView from "@/components/CardView";
 import PixelSprite from "@/components/PixelSprite";
 import { Button, LinkButton } from "@/components/ui";
 import { CARD_BY_ID, validateDeck } from "@/lib/cards";
-import type { Action, PublicView, Unit } from "@/lib/game/engine";
+import { STRIKE_COST, STRIKE_DAMAGE, type Action, type PublicView, type Unit } from "@/lib/game/engine";
 import { useProfile } from "@/lib/client/profile";
 import { useGate } from "@/lib/client/useGate";
 
@@ -87,7 +87,7 @@ function UnitView({ u, state, onClick }: { u: Unit; state: "idle" | "ready" | "s
   return (
     <Tag
       onClick={onClick}
-      aria-label={`${c.name}, attack ${u.attack}, HP ${u.hp}${state === "ready" ? ", ready" : ""}`}
+      aria-label={`${c.name}, attack ${u.attack}, HP ${u.hp}${u.bonded ? ", bonded" : ""}${state === "ready" ? ", ready" : ""}`}
       className={`relative flex w-[4.6rem] shrink-0 animate-rise flex-col items-center bg-ink p-1 sm:w-24 ${ring} ${state === "target" ? "cursor-crosshair" : ""} ${
         state === "hit" ? "animate-shake" : ""
       } ${state === "ready" ? "-translate-y-0.5" : ""} transition-transform`}
@@ -100,6 +100,11 @@ function UnitView({ u, state, onClick }: { u: Unit; state: "idle" | "ready" | "s
         <span className={u.hp < u.maxHp ? "text-blood" : ""}>♥{u.hp}</span>
       </div>
       {state === "ready" && <span className="absolute -top-2 bg-bone px-1 font-pixel text-[6px] text-ink">READY</span>}
+      {u.bonded && (
+        <span className="absolute -bottom-2 border border-blood bg-ink px-1 font-pixel text-[6px] text-blood" title="Pack Bond: +1/+1">
+          BOND
+        </span>
+      )}
     </Tag>
   );
 }
@@ -113,6 +118,7 @@ export default function BattlePage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [attacker, setAttacker] = useState<number | null>(null);
+  const [striking, setStriking] = useState(false);
   const [hits, setHits] = useState<Set<string>>(new Set());
   const [botActing, setBotActing] = useState(false);
   const recorded = useRef<string | null>(null);
@@ -145,6 +151,7 @@ export default function BattlePage() {
     setBusy(true);
     setError(null);
     setAttacker(null);
+    setStriking(false);
     try {
       const res = await fetch("/api/battle/start", {
         method: "POST",
@@ -208,6 +215,7 @@ export default function BattlePage() {
       setBusy(true);
       setError(null);
       setAttacker(null);
+      setStriking(false);
       try {
         const res = await fetch("/api/battle/action", {
           method: "POST",
@@ -249,8 +257,14 @@ export default function BattlePage() {
 
   const myTurn = view.turn === "player" && !view.over && !busy;
   const botGuards = view.bot.board.filter((u) => CARD_BY_ID[u.cardId].keyword === "Guard");
+  const aiming = attacker !== null || striking;
   const canTarget = (t: "hero" | number) =>
-    attacker !== null && (botGuards.length ? typeof t === "number" && botGuards.some((g) => g.uid === t) : true);
+    aiming && (botGuards.length ? typeof t === "number" && botGuards.some((g) => g.uid === t) : true);
+  const hitTarget = (target: "hero" | number) => {
+    if (striking) send({ type: "strike", target });
+    else if (attacker !== null) send({ type: "attack", attacker, target });
+  };
+  const strikeReady = myTurn && !view.player.struck && view.player.energy >= STRIKE_COST;
 
   const unitState = (u: Unit, side: "player" | "bot") => {
     if (hits.has(`u:${u.uid}`)) return "hit" as const;
@@ -277,7 +291,7 @@ export default function BattlePage() {
             deckCount={view.bot.deckCount}
             hit={hits.has("hero:bot")}
             targetable={myTurn && canTarget("hero")}
-            onTarget={() => attacker !== null && send({ type: "attack", attacker, target: "hero" })}
+            onTarget={() => hitTarget("hero")}
           />
           <div className="flex min-h-[7.5rem] items-center justify-center gap-2 border-b border-dashed border-smoke pb-3" aria-label="Enemy board">
             {view.bot.board.length === 0 && <span className="font-mono text-xs text-ash">empty field</span>}
@@ -286,7 +300,7 @@ export default function BattlePage() {
                 key={u.uid}
                 u={u}
                 state={unitState(u, "bot")}
-                onClick={myTurn && canTarget(u.uid) && attacker !== null ? () => send({ type: "attack", attacker, target: u.uid }) : undefined}
+                onClick={myTurn && canTarget(u.uid) ? () => hitTarget(u.uid) : undefined}
               />
             ))}
           </div>
@@ -301,15 +315,32 @@ export default function BattlePage() {
                 <span className="text-bone">BATTLE OVER</span>
               ) : botActing || view.turn === "bot" || busy ? (
                 <span className="animate-flicker text-blood">ONI BOT IS ACTING…</span>
-              ) : attacker !== null ? (
-                <span className="text-bone">CHOOSE A TARGET{botGuards.length ? " (GUARD FIRST)" : ""}</span>
+              ) : aiming ? (
+                <span className="text-bone">
+                  {striking ? "EMBER STRIKE: " : ""}CHOOSE A TARGET{botGuards.length ? " (GUARD FIRST)" : ""}
+                </span>
               ) : (
                 <span className="text-bone">YOUR TURN</span>
               )}
             </div>
-            <Button onClick={() => send({ type: "end" })} disabled={!myTurn} className="px-3 py-2">
-              End turn
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setAttacker(null);
+                  setStriking((v) => !v);
+                }}
+                disabled={!strikeReady}
+                aria-pressed={striking}
+                title={`Ember Strike: pay ${STRIKE_COST} energy to deal ${STRIKE_DAMAGE} damage. Once per turn.`}
+                className={`px-3 py-2 ${striking ? "pixel-border-active" : ""}`}
+              >
+                {striking ? "Cancel" : `Strike ${STRIKE_COST}⚡`}
+              </Button>
+              <Button onClick={() => send({ type: "end" })} disabled={!myTurn} className="px-3 py-2">
+                End turn
+              </Button>
+            </div>
           </div>
 
           {/* Player side */}
@@ -320,7 +351,14 @@ export default function BattlePage() {
                 key={u.uid}
                 u={u}
                 state={unitState(u, "player")}
-                onClick={myTurn && u.canAttack ? () => setAttacker(attacker === u.uid ? null : u.uid) : undefined}
+                onClick={
+                  myTurn && u.canAttack
+                    ? () => {
+                        setStriking(false);
+                        setAttacker(attacker === u.uid ? null : u.uid);
+                      }
+                    : undefined
+                }
               />
             ))}
           </div>
@@ -362,7 +400,15 @@ export default function BattlePage() {
               </li>
             ))}
           </ol>
-          <p className="mt-3 border-t border-smoke pt-2 font-mono text-[10px] text-ash">Every move is validated on the server.</p>
+          <div className="mt-3 flex flex-col gap-1 border-t border-smoke pt-2 font-mono text-[10px] text-ash">
+            <p>
+              <span className="text-bone">Ember Strike</span>: {STRIKE_COST} energy, {STRIKE_DAMAGE} damage, once per turn.
+            </p>
+            <p>
+              <span className="text-bone">Pack Bond</span>: summon beside an ally from the same pack for +1/+1.
+            </p>
+            <p>Every move is validated on the server.</p>
+          </div>
         </aside>
       </div>
 

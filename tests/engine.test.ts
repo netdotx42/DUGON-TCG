@@ -1,7 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { Action, GameState, HERO_HP, IllegalAction, MAX_ROUNDS, applyAction, createGame, legalTargets, publicView, xpFor } from "@/lib/game/engine";
+import {
+  Action,
+  GameState,
+  HERO_HP,
+  IllegalAction,
+  MAX_ROUNDS,
+  STRIKE_COST,
+  applyAction,
+  createGame,
+  legalTargets,
+  publicView,
+  xpFor,
+} from "@/lib/game/engine";
 import { BOT_DECKS, chooseBotAction, runBotTurn } from "@/lib/game/bot";
-import { CARD_BY_ID, validateDeck, unlockedCardIds } from "@/lib/cards";
+import { CARD_BY_ID, bondedCount, cardSet, validateDeck, unlockedCardIds } from "@/lib/cards";
 
 const STARTER = [1, 2, 3, 4, 5];
 const newGame = (seed = 42) => createGame(STARTER, BOT_DECKS[0], seed, "test");
@@ -79,7 +91,7 @@ describe("rules enforcement", () => {
     n = applyAction(n, "player", { type: "play", uid: 901 });
     expect(() => applyAction(n, "player", { type: "attack", attacker: 900, target: "hero" })).toThrow(/cannot attack/);
     const hit = applyAction(n, "player", { type: "attack", attacker: 901, target: "hero" });
-    expect(hit.bot.hp).toBe(HERO_HP - 2);
+    expect(hit.bot.hp).toBe(HERO_HP - 3); // Wisp 2/1 bonded with the Imp (both Origin): 3/2
   });
   it("Guard units must be attacked first", () => {
     const s = newGame();
@@ -142,6 +154,95 @@ describe("rules enforcement", () => {
   });
 });
 
+describe("Ember Strike", () => {
+  it("costs 2 energy, deals 1 damage to the enemy hero, once per turn", () => {
+    const s = newGame();
+    s.player.energy = 5;
+    const n = applyAction(s, "player", { type: "strike", target: "hero" });
+    expect(n.bot.hp).toBe(HERO_HP - 1);
+    expect(n.player.energy).toBe(5 - STRIKE_COST);
+    expect(publicView(n).player.struck).toBe(true);
+    expect(() => applyAction(n, "player", { type: "strike", target: "hero" })).toThrow(/already used/);
+  });
+  it("needs enough energy", () => {
+    const s = newGame();
+    s.player.energy = 1;
+    expect(() => applyAction(s, "player", { type: "strike", target: "hero" })).toThrow(/energy/);
+  });
+  it("respects Guard and can finish off a unit", () => {
+    const s = newGame();
+    s.player.energy = 5;
+    const guard = withUnit(s, "bot", 3); // Moss Warden 1/4, Guard
+    const wisp = withUnit(s, "bot", 2); // Lantern Wisp 2/1
+    expect(() => applyAction(s, "player", { type: "strike", target: "hero" })).toThrow(/Illegal target/);
+    expect(() => applyAction(s, "player", { type: "strike", target: wisp })).toThrow(/Illegal target/);
+    const n = applyAction(s, "player", { type: "strike", target: guard });
+    expect(n.bot.board.find((u) => u.uid === guard)?.hp).toBe(3);
+    s.bot.board = s.bot.board.filter((u) => u.uid !== guard);
+    const k = applyAction(s, "player", { type: "strike", target: wisp });
+    expect(k.bot.board.find((u) => u.uid === wisp)).toBeUndefined();
+    expect(k.bot.graveyard.some((c) => c.uid === wisp)).toBe(true);
+  });
+  it("recharges at the start of your next turn", () => {
+    let s = newGame();
+    for (let r = 0; r < 2; r++) {
+      s = applyAction(s, "player", { type: "end" });
+      s = applyAction(s, "bot", { type: "end" });
+    }
+    s = applyAction(s, "player", { type: "strike", target: "hero" });
+    s = applyAction(s, "player", { type: "end" });
+    s = applyAction(s, "bot", { type: "end" });
+    expect(s.player.struck).toBe(false);
+    expect(() => applyAction(s, "player", { type: "strike", target: "hero" })).not.toThrow();
+  });
+  it("can win the battle", () => {
+    const s = newGame();
+    s.player.energy = 2;
+    s.bot.hp = 1;
+    const n = applyAction(s, "player", { type: "strike", target: "hero" });
+    expect(n.over).toBe(true);
+    expect(n.outcome).toBe("win");
+  });
+  it("opens battles sealed before the hero power existed", () => {
+    const s = newGame();
+    delete s.player.struck;
+    s.player.energy = 2;
+    expect(applyAction(s, "player", { type: "strike", target: "hero" }).bot.hp).toBe(HERO_HP - 1);
+  });
+});
+
+describe("Pack Bond", () => {
+  it("groups cards by booster pack, with the first ten as Origin", () => {
+    expect(cardSet(1)).toBe("origin");
+    expect(cardSet(11)).toBe("ember-shrine");
+    expect(bondedCount([1, 2, 11, 23, 47])).toBe(2);
+    expect(bondedCount([11, 12, 13, 17, 18])).toBe(5);
+    expect(bondedCount([11, 17, 23, 29, 35])).toBe(0);
+  });
+  it("gives +1/+1 when summoned beside an ally from the same pack", () => {
+    const s = newGame();
+    s.player.energy = 5;
+    withUnit(s, "player", 11); // Cinder Pup, ember-shrine
+    s.player.hand = [{ uid: 900, cardId: 13 }, { uid: 901, cardId: 17 }]; // Hearth Oni (ember-shrine), Bell Crab (tide-hollow)
+    let n = applyAction(s, "player", { type: "play", uid: 900 });
+    const oni = n.player.board.find((u) => u.uid === 900)!;
+    expect([oni.attack, oni.hp, oni.maxHp, oni.bonded]).toEqual([4, 3, 3, true]);
+    expect(n.log.at(-1)).toMatch(/Pack Bond/);
+    n = applyAction(n, "player", { type: "play", uid: 901 });
+    const crab = n.player.board.find((u) => u.uid === 901)!;
+    expect([crab.attack, crab.hp, crab.bonded]).toEqual([1, 2, undefined]);
+  });
+  it("does not bond with the enemy board", () => {
+    const s = newGame();
+    s.player.energy = 5;
+    withUnit(s, "bot", 1);
+    s.player.hand = [{ uid: 900, cardId: 2 }];
+    const n = applyAction(s, "player", { type: "play", uid: 900 });
+    expect(n.player.board[0].bonded).toBeUndefined();
+    expect(n.player.board[0].attack).toBe(CARD_BY_ID[2].attack);
+  });
+});
+
 describe("bot", () => {
   it("only makes legal moves and always finishes its turn", () => {
     for (let seed = 1; seed <= 200; seed++) {
@@ -162,6 +263,18 @@ describe("bot", () => {
     s.bot.hand = [];
     const u = withUnit(s, "bot", 4);
     expect(chooseBotAction(s)).toEqual({ type: "attack", attacker: u, target: "hero" });
+  });
+  it("spends leftover energy on Ember Strike, preferring a kill", () => {
+    const s = newGame();
+    s.turn = "bot";
+    s.bot.hand = [];
+    s.bot.energy = 3;
+    const wisp = withUnit(s, "player", 2); // 2/1
+    expect(chooseBotAction(s)).toEqual({ type: "strike", target: wisp });
+    s.player.board = [];
+    expect(chooseBotAction(s)).toEqual({ type: "strike", target: "hero" });
+    s.bot.struck = true;
+    expect(chooseBotAction(s)).toEqual({ type: "end" });
   });
 });
 
