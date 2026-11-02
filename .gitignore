@@ -1,0 +1,14 @@
+node_modules
+.next
+out
+.env
+.env*.local
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+.data
+contracts/node_modules
+contracts/artifacts
+contracts/cache
+contracts/typechain-types
+contracts/coverage
