@@ -82,7 +82,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
       <Atmosphere />
-      <header className="sticky top-0 z-30 bg-ink/80 backdrop-blur-md">
+      <header className="sticky top-0 z-30 bg-ink/80 backdrop-blur-md [@media(max-height:640px)]:static">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
           <Link href="/" aria-label="DUGON home" className="transition hover:brightness-125">
             <Logo size={44} />

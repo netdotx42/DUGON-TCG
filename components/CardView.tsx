@@ -52,7 +52,7 @@ export default function CardView({ id, size = "md", locked, lockLabel, selected,
         <PixelSprite name={c.sprite} size={sprite} className={locked ? "grayscale" : ""} />
       </div>
       <div className="min-h-[2.4em]">
-        <div className={`font-pixel leading-tight text-bone ${size === "sm" ? "text-[7px]" : "text-[9px]"}`}>{c.name}</div>
+        <div className={`font-pixel leading-tight text-bone ${size === "sm" ? "text-[8px]" : "text-[9px]"}`}>{c.name}</div>
         <div className="font-mono text-[10px] text-ash">{c.jp}</div>
       </div>
       {showText && size !== "sm" && (

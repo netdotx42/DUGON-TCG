@@ -57,20 +57,20 @@ function HeroPanel(props: {
         props.hit ? "animate-shake" : ""
       }`}
     >
-      <PixelSprite name={props.sprite} size={40} />
-      <div className="flex-1">
+      <PixelSprite name={props.sprite} size={40} className="shrink-0" />
+      <div className="min-w-0 flex-1">
         <div className="flex items-baseline justify-between gap-2">
-          <span className="font-pixel text-[9px] text-bone">
+          <span className="min-w-0 truncate font-pixel text-[9px] text-bone">
             {props.name} <span className="font-mono text-[10px] text-ash">{props.jp}</span>
           </span>
-          <span className="font-pixel text-[11px] text-bone">♥ {Math.max(0, props.hp)}</span>
+          <span className="shrink-0 font-pixel text-[11px] text-bone">♥ {Math.max(0, props.hp)}</span>
         </div>
         <div className="mt-1">
           <HpBar hp={props.hp} />
         </div>
-        <div className="mt-1 flex items-center justify-between font-mono text-[10px] text-ash">
+        <div className="mt-1.5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 font-mono text-[11px] text-ash">
           <EnergyPips energy={props.energy} max={props.maxEnergy} />
-          <span>
+          <span className="whitespace-nowrap">
             hand {props.handCount} · deck {props.deckCount}
           </span>
         </div>
@@ -88,20 +88,22 @@ function UnitView({ u, state, onClick }: { u: Unit; state: "idle" | "ready" | "s
     <Tag
       onClick={onClick}
       aria-label={`${c.name}, attack ${u.attack}, HP ${u.hp}${u.bonded ? ", bonded" : ""}${state === "ready" ? ", ready" : ""}`}
-      className={`relative flex w-[4.6rem] shrink-0 animate-rise flex-col items-center bg-ink p-1 sm:w-24 ${ring} ${state === "target" ? "cursor-crosshair" : ""} ${
+      className={`relative flex min-w-0 max-w-[6rem] flex-1 basis-0 animate-rise flex-col items-center bg-ink px-1 pb-1.5 pt-1.5 ${ring} ${state === "target" ? "cursor-crosshair" : ""} ${
         state === "hit" ? "animate-shake" : ""
       } ${state === "ready" ? "-translate-y-0.5" : ""} transition-transform`}
     >
       <PixelSprite name={c.sprite} size={44} />
-      <div className="w-full truncate text-center font-pixel text-[6px] text-ash sm:text-[7px]">{c.name}</div>
-      {c.keyword && <div className="font-mono text-[9px] text-bone">{c.keyword}</div>}
-      <div className="mt-0.5 flex w-full justify-between px-1 font-pixel text-[9px]">
+      <div className="w-full truncate text-center font-mono text-[10px] leading-tight text-ash sm:text-[11px]" title={c.name}>
+        {c.name}
+      </div>
+      <div className="h-[13px] font-mono text-[10px] leading-tight text-bone">{c.keyword ?? ""}</div>
+      <div className="mt-1 flex w-full justify-between gap-1 px-0.5 font-pixel text-[9px] sm:px-1 sm:text-[10px]">
         <span>⚔{u.attack}</span>
         <span className={u.hp < u.maxHp ? "text-blood" : ""}>♥{u.hp}</span>
       </div>
-      {state === "ready" && <span className="absolute -top-2 bg-bone px-1 font-pixel text-[6px] text-ink">READY</span>}
+      {state === "ready" && <span className="absolute -top-2 bg-bone px-1 py-px font-pixel text-[8px] leading-none text-ink">READY</span>}
       {u.bonded && (
-        <span className="absolute -bottom-2 border border-blood bg-ink px-1 font-pixel text-[6px] text-blood" title="Pack Bond: +1/+1">
+        <span className="absolute -bottom-2 border border-blood bg-ink px-1 py-px font-pixel text-[8px] leading-none text-blood" title="Pack Bond: +1/+1">
           BOND
         </span>
       )}
@@ -276,9 +278,10 @@ export default function BattlePage() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl">
-      <div className="grid gap-4 lg:grid-cols-[1fr_14rem]">
-        <div className="flex flex-col gap-3">
+    <div className="mx-auto max-w-4xl touch-manipulation">
+      {/* minmax(0, …) + min-w-0 stop the scrolling hand row from widening the page past the screen on phones. */}
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,1fr)_14rem]">
+        <div className="flex min-w-0 flex-col gap-3">
           {/* Bot side */}
           <HeroPanel
             name="Oni Bot"
@@ -293,8 +296,8 @@ export default function BattlePage() {
             targetable={myTurn && canTarget("hero")}
             onTarget={() => hitTarget("hero")}
           />
-          <div className="flex min-h-[6.5rem] items-center justify-center gap-2 border-b border-dashed border-smoke pb-3" aria-label="Enemy board">
-            {view.bot.board.length === 0 && <span className="font-mono text-xs text-ash">empty field</span>}
+          <div className="flex min-h-[7.5rem] items-center justify-center gap-1.5 border-b border-dashed border-smoke pb-4 pt-2 sm:gap-2" aria-label="Enemy board">
+            {view.bot.board.length === 0 && <span className="font-mono text-sm text-ash">empty field</span>}
             {view.bot.board.map((u) => (
               <UnitView
                 key={u.uid}
@@ -306,11 +309,11 @@ export default function BattlePage() {
           </div>
 
           {/* Turn bar */}
-          <div className="flex items-center justify-between gap-3">
-            <div className="font-pixel text-[9px] text-ash">
+          <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-2 sm:grid-cols-[auto_minmax(0,1fr)_auto]">
+            <div className="whitespace-nowrap font-pixel text-[9px] text-ash">
               ROUND <span className="text-bone">{view.round}</span>/{view.maxRounds}
             </div>
-            <div className="font-pixel text-[9px]" aria-live="polite">
+            <div className="text-right font-pixel text-[9px] leading-relaxed sm:text-center" aria-live="polite">
               {view.over ? (
                 <span className="text-bone">BATTLE OVER</span>
               ) : botActing || view.turn === "bot" || busy ? (
@@ -323,7 +326,7 @@ export default function BattlePage() {
                 <span className="text-bone">YOUR TURN</span>
               )}
             </div>
-            <div className="flex gap-2">
+            <div className="col-span-2 grid grid-cols-2 gap-2 sm:col-span-1 sm:flex">
               <Button
                 variant="ghost"
                 onClick={() => {
@@ -333,19 +336,19 @@ export default function BattlePage() {
                 disabled={!strikeReady}
                 aria-pressed={striking}
                 title={`Ember Strike: pay ${STRIKE_COST} energy to deal ${STRIKE_DAMAGE} damage. Once per turn.`}
-                className={`px-3 py-2 ${striking ? "pixel-border-active" : ""}`}
+                className={`whitespace-nowrap px-3 py-2 ${striking ? "pixel-border-active" : ""}`}
               >
                 {striking ? "Cancel" : `Strike ${STRIKE_COST}⚡`}
               </Button>
-              <Button onClick={() => send({ type: "end" })} disabled={!myTurn} className="px-3 py-2">
+              <Button onClick={() => send({ type: "end" })} disabled={!myTurn} className="whitespace-nowrap px-3 py-2">
                 End turn
               </Button>
             </div>
           </div>
 
           {/* Player side */}
-          <div className="flex min-h-[6.5rem] items-center justify-center gap-2 border-t border-dashed border-smoke pt-3" aria-label="Your board">
-            {view.player.board.length === 0 && <span className="font-mono text-xs text-ash">summon a spirit from your hand</span>}
+          <div className="flex min-h-[7.5rem] items-center justify-center gap-1.5 border-t border-dashed border-smoke pb-3 pt-4 sm:gap-2" aria-label="Your board">
+            {view.player.board.length === 0 && <span className="text-center font-mono text-sm text-ash">summon a spirit from your hand</span>}
             {view.player.board.map((u) => (
               <UnitView
                 key={u.uid}
@@ -379,32 +382,35 @@ export default function BattlePage() {
               {error}
             </p>
           )}
-          {/* On phones the hand sticks to the bottom of the screen so it stays in reach while you look at the board. */}
+          {/* On phones the hand sticks to the bottom of the screen so it stays in reach while you look at the board.
+              On short screens (landscape phones, iPhone SE) it would cover most of the board, so it scrolls with the page there. */}
           <div
             aria-label="Your hand"
-            className="sticky bottom-0 z-30 -mx-4 flex gap-2 overflow-x-auto bg-ink/90 px-4 pb-3 pt-3 shadow-[0_-2px_0_#c8102e] backdrop-blur-md lg:static lg:mx-0 lg:bg-transparent lg:px-0 lg:pb-2 lg:shadow-none lg:backdrop-blur-none"
+            className="sticky bottom-0 z-30 -mx-4 flex snap-x gap-2 overflow-x-auto overscroll-x-contain bg-ink/90 px-4 pb-3 pt-4 shadow-[0_-2px_0_#c8102e] backdrop-blur-md [@media(max-height:640px)]:static lg:static lg:mx-0 lg:bg-transparent lg:px-0 lg:pb-2 lg:shadow-none lg:backdrop-blur-none"
           >
             {view.player.hand.length === 0 && <span className="font-mono text-xs text-ash">no cards in hand</span>}
             {view.player.hand.map((c) => {
               const card = CARD_BY_ID[c.cardId];
               const playable = myTurn && card.cost <= view.player.energy && view.player.board.length < MAX_BOARD;
               return (
-                <CardView key={c.uid} id={c.cardId} size="sm" dim={!playable} onClick={playable ? () => send({ type: "play", uid: c.uid }) : undefined} />
+                <div key={c.uid} className="flex shrink-0 snap-start">
+                  <CardView id={c.cardId} size="sm" dim={!playable} onClick={playable ? () => send({ type: "play", uid: c.uid }) : undefined} />
+                </div>
               );
             })}
           </div>
         </div>
 
         <aside className="pixel-border-dim h-fit p-3" aria-label="Battle log">
-          <div className="mb-2 font-pixel text-[8px] text-ash">BATTLE LOG</div>
-          <ol className="flex max-h-48 flex-col-reverse gap-1 overflow-y-auto font-mono text-[11px] text-ash lg:max-h-[28rem]" aria-live="polite">
+          <div className="mb-2 font-pixel text-[9px] text-ash">BATTLE LOG</div>
+          <ol className="flex max-h-48 flex-col-reverse gap-1 overflow-y-auto overscroll-contain font-mono text-xs text-ash lg:max-h-[28rem]" aria-live="polite">
             {[...view.log].reverse().map((l, i) => (
               <li key={`${view.seq}-${i}`} className={i === 0 ? "text-bone" : ""}>
                 {l}
               </li>
             ))}
           </ol>
-          <div className="mt-3 flex flex-col gap-1 border-t border-smoke pt-2 font-mono text-[10px] text-ash">
+          <div className="mt-3 flex flex-col gap-1 border-t border-smoke pt-2 font-mono text-[11px] text-ash">
             <p>
               <span className="text-bone">Ember Strike</span>: {STRIKE_COST} energy, {STRIKE_DAMAGE} damage, once per turn.
             </p>
@@ -418,7 +424,7 @@ export default function BattlePage() {
 
       {view.over && !botActing && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-ink/85 p-4" role="dialog" aria-modal="true" aria-label="Battle result">
-          <div className="panel panel-red animate-rise p-8 text-center">
+          <div className="panel panel-red w-full max-w-sm animate-rise p-6 text-center sm:p-8">
             <div className="neon font-mono text-3xl">{view.outcome === "win" ? "勝利" : view.outcome === "loss" ? "敗北" : "引分"}</div>
             <div className="mt-2 font-pixel text-xl text-bone">{view.outcome === "win" ? "VICTORY" : view.outcome === "loss" ? "DEFEAT" : "DRAW"}</div>
             <p className="mt-3 font-mono text-xs text-ash">+{view.xp} XP</p>
@@ -429,7 +435,7 @@ export default function BattlePage() {
         </div>
       )}
 
-      <div className="mt-6 flex gap-3">
+      <div className="mt-6 flex flex-wrap gap-3">
         <Button
           variant="ghost"
           disabled={busy}
